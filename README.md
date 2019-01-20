@@ -19,10 +19,10 @@ For example (using JUnit 5, but you can of course also use JUnit 4):
 @WebMvcTest
 class GreetingControllerTest {
     @MockkBean
-    private lateinit var greetingService
+    private lateinit var greetingService: GreetingService
     
     @Autowired
-    private GreetingController controller
+    private lateinit var controller: GreetingController
     
     @Test
     fun `should greet by delegating to the greeting service`() {
