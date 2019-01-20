@@ -31,7 +31,7 @@ class SpykDefinition(
         check(resolvedType != null) { "${typeToSpy} cannot be resolved" }
         Assert.isInstanceOf(resolvedType, instance)
         if (instance.isMock) {
-            return instance as T
+            return instance
         }
         return spyk<Any>(name = name, objToCopy = instance).clear(this.clear) as T
     }
