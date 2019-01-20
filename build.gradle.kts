@@ -7,7 +7,7 @@ plugins {
     kotlin("jvm") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.noarg") version kotlinVersion
-    id("org.springframework.boot") version "2.1.1.RELEASE" apply false
+    id("org.springframework.boot") version "2.1.2.RELEASE" apply false
     id("io.spring.dependency-management") version "1.0.6.RELEASE"
     id("org.jetbrains.dokka") version "0.9.17"
 }
