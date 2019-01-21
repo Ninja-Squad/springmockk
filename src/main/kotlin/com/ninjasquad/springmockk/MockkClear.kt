@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap
  * [MockkBean] annotation.
  *
  * @author Phillip Webb
+ * @author JB Nizet
  * @since 1.4.0
  * @see ClearMocksTestExecutionListener
  */

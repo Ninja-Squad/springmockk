@@ -63,7 +63,7 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
         Assert.isInstanceOf(
             ConfigurableListableBeanFactory::class.java,
             beanFactory,
-            "Mock beans can only be used with a ConfigurableListableBeanFactory"
+            "Mockk beans can only be used with a ConfigurableListableBeanFactory"
         )
         this.beanFactory = beanFactory
     }
@@ -73,7 +73,7 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
         Assert.isInstanceOf(
             BeanDefinitionRegistry::class.java,
             beanFactory,
-            "@MockBean can only be used on bean factories that implement BeanDefinitionRegistry"
+            "@MockkBean can only be used on bean factories that implement BeanDefinitionRegistry"
         )
         postProcessBeanFactory(beanFactory, beanFactory as BeanDefinitionRegistry)
     }

@@ -8,6 +8,7 @@ import org.springframework.test.context.ContextCustomizerFactory
  * A {@link ContextCustomizerFactory} to add MockK support.
  *
  * @author Phillip Webb
+ * @author JB Nizet
  */
 class MockkContextCustomizerFactory : ContextCustomizerFactory {
     override fun createContextCustomizer(

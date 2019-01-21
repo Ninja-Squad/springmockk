@@ -9,6 +9,7 @@ import org.springframework.test.context.MergedContextConfiguration
  * A {@link ContextCustomizer} to add MockK support.
  *
  * @author Phillip Webb
+ * @author JB Nizet
  */
 data class MockkContextCustomizer(private val definitions: Set<Definition>) : ContextCustomizer {
 

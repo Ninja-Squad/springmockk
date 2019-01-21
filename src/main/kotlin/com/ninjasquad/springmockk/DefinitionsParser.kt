@@ -12,8 +12,8 @@ import kotlin.collections.LinkedHashSet
 import kotlin.reflect.KClass
 
 /**
- * Parser to create {@link MockDefinition} and {@link SpyDefinition} instances from
- * {@link MockBean @MockBean} and {@link SpyBean @SpyBean} annotations declared on or in a
+ * Parser to create {@link MockkDefinition} and {@link SpykDefinition} instances from
+ * {@link MockkBean @MockkBean} and {@link SpykBean @SpykBean} annotations declared on or in a
  * class.
  *
  * @author Phillip Webb

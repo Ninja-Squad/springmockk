@@ -13,6 +13,7 @@ import org.springframework.util.ClassUtils
  * {@link MockkClear}.
  *
  * @author Phillip Webb
+ * @author JB Nizet
  * @since 1.4.0
  */
 class ClearMocksTestExecutionListener : AbstractTestExecutionListener() {
