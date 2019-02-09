@@ -15,7 +15,7 @@ plugins {
 }
 
 group = "com.ninja-squad"
-version = "0.0.1-SNAPSHOT"
+version = "1.0.0"
 description = "MockBean and SpyBean, but for MockK instead of Mockito"
 
 java {
