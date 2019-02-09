@@ -36,20 +36,17 @@ class GreetingControllerTest {
 
 ## Differences with Mockito
 
- - the MockK defaults are used, which means that mocks created by the annotations are strict (i.e. not relaxed) by default.
+ - the MockK defaults are used, which means that mocks created by the annotations are strict (i.e. not relaxed) by default. But [you can configure MockK](https://mockk.io/#settings-file) to use different defaults globally
  - the created mocks can't be serializable as they can be with Mockito (AFAIK, MockK doesn't support that feature)
  - mocks created by the `@MockkBean` annotation can be relaxed by setting the `relaxed` attribute to true. 
-   They can't be `relaxUnitFun` yet due to missing support in the MockK DSL at the moment
+   They can't be `relaxUnitFun` yet due to [missing support in the MockK DSL](https://github.com/mockk/mockk/issues/227) at the moment
 
 ## Limitations
- - the issue [5837](https://github.com/spring-projects/spring-boot/issues/5837), which has been fixed for Mockito spies using Mockito-specific features, also exists with MockK, and hasn't been fixed yet. 
+ - the [issue 5837](https://github.com/spring-projects/spring-boot/issues/5837), which has been fixed for Mockito spies using Mockito-specific features, also exists with MockK, and hasn't been fixed yet. 
    If you have a good idea, please tell!
- - this project is not released yet. 
-   My hope is that the Spring Boot team integrates this in Spring Boot itself. 
-   I'll get in touch with the team and see how it goes. 
-   If it doesn't get integrated in Spring Boot, I'll see with MockK if they want to integrate it as a module of MockK.
-   And if none of this works out, I'll release it.
- - Annotations are looked up on fields, and not on properties (for now). 
+ - [this is not an official Spring Boot project](https://github.com/spring-projects/spring-boot/issues/15749), so it might not work out of the box for newest versions if backwards incompatible changes are introduced in Spring Boot. 
+ Please file issues if you find problems.
+ - annotations are looked up on fields, and not on properties (for now). 
    This doesn't matter much until you use a custom qualifier annotation.
    In that case, make sure that it targets fields and not properties, or use `@field:YourQualifier` to apply it on your beans.
 
@@ -61,4 +58,4 @@ class GreetingControllerTest {
 
 ## How to use
 
-Just add the generated jar to your test classpath, and start using the annotations.
+Just add the jar to your test classpath, and start using the annotations.
