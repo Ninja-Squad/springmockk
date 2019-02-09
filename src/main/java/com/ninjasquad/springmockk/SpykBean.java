@@ -107,7 +107,7 @@ public @interface SpykBean {
 	Class<?>[] classes() default {};
 
 	/**
-	 * The reset mode to apply to the spied bean. The default is {@link MockReset#AFTER}
+	 * The reset mode to apply to the spied bean. The default is {@link MockkClear#AFTER}
 	 * meaning that spies are automatically reset after each test method is invoked.
 	 * @return the reset mode
 	 */
