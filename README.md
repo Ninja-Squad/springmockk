@@ -1,5 +1,7 @@
 # SpringMockK
 
+[![CircleCI](https://circleci.com/gh/Ninja-Squad/springmockk.svg?style=svg)](https://circleci.com/gh/Ninja-Squad/springmockk)
+
 Support for Spring Boot integration tests written in Kotlin using [MockK](https://mockk.io/) instead of Mockito.
  
 Spring Boot provides `@MockBean` and `@SpyBean` annotations for integration tests, which create mock/spy beans using Mockito.
@@ -10,12 +12,12 @@ This project provides equivalent annotations `MockkBean` and `SpykBean` to do th
 
 All the Mockito-specific classes of the spring-boot-test library, including the automated tests, have been cloned, translated to Kotlin, and adapted to MockK.
 
-This library thus provides the same functionality as the standard Mockito-based Spring beans.
+This library thus provides the same functionality as the standard Mockito-based Spring Boot mock beans.
 
 For example (using JUnit 5, but you can of course also use JUnit 4):
 
 ```kotlin
-@ExtendWith(SpringExtension.class)
+@ExtendWith(SpringExtension::class)
 @WebMvcTest
 class GreetingControllerTest {
     @MockkBean
@@ -34,12 +36,36 @@ class GreetingControllerTest {
 }
 ```
 
+## Usage
+
+### Gradle (Kotlin DSL)
+
+Add this to your dependencies:
+
+    testImplementation("com.ninja-squad:springmockk:1.0.0")
+
+If you want to make sure Mockito (and the standard `MockBean` and `SpyBean` annotations) is not used, you can also exclude the mockito dependency:
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude(module = "mockito-core")
+    }
+
+### Maven
+
+Add this to your dependencies:
+
+    <dependency>
+      <groupId>com.ninja-squad</groupId>
+      <artifactId>springmockk</artifactId>
+      <version>1.0.0</version>
+      <scope>test</scope>
+    </dependency>
+
 ## Differences with Mockito
 
- - the MockK defaults are used, which means that mocks created by the annotations are strict (i.e. not relaxed) by default. But [you can configure MockK](https://mockk.io/#settings-file) to use different defaults globally
+ - the MockK defaults are used, which means that mocks created by the annotations are strict (i.e. not relaxed) by default. But [you can configure MockK](https://mockk.io/#settings-file) to use different defaults globally, or you can use the `@MockkBean(relaxed = true)`. `relaxUnitFun` can't be set on the `MockkBean`annotation yet due to [missing support in the MockK DSL](https://github.com/mockk/mockk/issues/227).
  - the created mocks can't be serializable as they can be with Mockito (AFAIK, MockK doesn't support that feature)
- - mocks created by the `@MockkBean` annotation can be relaxed by setting the `relaxed` attribute to true. 
-   They can't be `relaxUnitFun` yet due to [missing support in the MockK DSL](https://github.com/mockk/mockk/issues/227) at the moment
+
 
 ## Limitations
  - the [issue 5837](https://github.com/spring-projects/spring-boot/issues/5837), which has been fixed for Mockito spies using Mockito-specific features, also exists with MockK, and hasn't been fixed yet. 
@@ -55,7 +81,3 @@ class GreetingControllerTest {
 ```
   ./gradlew build
 ```
-
-## How to use
-
-Just add the jar to your test classpath, and start using the annotations.
