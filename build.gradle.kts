@@ -80,7 +80,7 @@ dependencies {
         exclude(module = "junit")
         exclude(module = "mockito-core")
     }
-    implementation("io.mockk:mockk:1.9")
+    implementation("io.mockk:mockk:1.9.1")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
