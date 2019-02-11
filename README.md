@@ -63,7 +63,7 @@ Add this to your dependencies:
 
 ## Differences with Mockito
 
- - the MockK defaults are used, which means that mocks created by the annotations are strict (i.e. not relaxed) by default. But [you can configure MockK](https://mockk.io/#settings-file) to use different defaults globally, or you can use the `@MockkBean(relaxed = true)`. `relaxUnitFun` can't be set on the `MockkBean`annotation yet due to [missing support in the MockK DSL](https://github.com/mockk/mockk/issues/227).
+ - the MockK defaults are used, which means that mocks created by the annotations are strict (i.e. not relaxed) by default. But [you can configure MockK](https://mockk.io/#settings-file) to use different defaults globally, or you can use `@MockkBean(relaxed = true)` or `@MockkBean(relaxUnitFun = true)`. 
  - the created mocks can't be serializable as they can be with Mockito (AFAIK, MockK doesn't support that feature)
 
 
