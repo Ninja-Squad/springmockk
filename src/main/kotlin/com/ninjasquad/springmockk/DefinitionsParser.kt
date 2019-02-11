@@ -66,6 +66,7 @@ class DefinitionsParser(existing: Collection<Definition> = emptySet()) {
                 extraInterfaces = annotation.extraInterfaces,
                 clear = annotation.clear,
                 relaxed = annotation.relaxed,
+                relaxUnitFun = annotation.relaxUnitFun,
                 qualifier = QualifierDefinition.forElement(element)
             )
             addDefinition(element, definition, "mock")

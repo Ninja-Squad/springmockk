@@ -49,6 +49,7 @@ class DefinitionsParserTests {
         assertThat(definition.typeToMock.resolve()).isEqualTo(ExampleService::class.java)
         assertThat(definition.extraInterfaces).containsExactly(ExampleExtraInterface::class)
         assertThat(definition.relaxed).isTrue()
+        assertThat(definition.relaxUnitFun).isTrue()
         assertThat(definition.clear).isEqualTo(MockkClear.NONE)
         assertThat(definition.qualifier).isNull()
     }
@@ -192,6 +193,7 @@ class DefinitionsParserTests {
         classes = [ExampleService::class],
         extraInterfaces = [ExampleExtraInterface::class],
         relaxed = true,
+        relaxUnitFun = true,
         clear = MockkClear.NONE
     )
     internal class MockBeanAttributes

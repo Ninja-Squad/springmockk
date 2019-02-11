@@ -2,9 +2,9 @@ package com.ninjasquad.springmockk
 
 import com.ninjasquad.springmockk.example.ExampleExtraInterface
 import com.ninjasquad.springmockk.example.ExampleService
+import io.mockk.MockKException
 import io.mockk.mockk
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatCode
+import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.core.ResolvableType
 
@@ -24,6 +24,7 @@ class MockDefinitionTests {
         assertThat(definition.typeToMock).isEqualTo(EXAMPLE_SERVICE_TYPE)
         assertThat(definition.extraInterfaces).isEmpty()
         assertThat(definition.relaxed).isFalse()
+        assertThat(definition.relaxUnitFun).isFalse()
         assertThat(definition.clear).isEqualTo(MockkClear.AFTER)
         assertThat(definition.qualifier).isNull()
     }
@@ -36,6 +37,7 @@ class MockDefinitionTests {
             typeToMock = EXAMPLE_SERVICE_TYPE,
             extraInterfaces = arrayOf(ExampleExtraInterface::class),
             relaxed = true,
+            relaxUnitFun = true,
             clear = MockkClear.BEFORE,
             qualifier = qualifier
         )
@@ -43,6 +45,7 @@ class MockDefinitionTests {
         assertThat(definition.typeToMock).isEqualTo(EXAMPLE_SERVICE_TYPE)
         assertThat(definition.extraInterfaces).containsExactly(ExampleExtraInterface::class)
         assertThat(definition.relaxed).isTrue()
+        assertThat(definition.relaxUnitFun).isTrue()
         assertThat(definition.clear).isEqualTo(MockkClear.BEFORE)
         assertThat(definition.qualifier).isEqualTo(qualifier)
     }
@@ -54,6 +57,7 @@ class MockDefinitionTests {
             typeToMock = EXAMPLE_SERVICE_TYPE,
             extraInterfaces = arrayOf(ExampleExtraInterface::class),
             relaxed = true,
+            relaxUnitFun = false,
             clear = MockkClear.BEFORE,
             qualifier = null
         )
@@ -67,8 +71,27 @@ class MockDefinitionTests {
         assertThat(MockkClear.get(mock)).isEqualTo(MockkClear.BEFORE)
     }
 
+    @Test
+    fun createMockWithRelaxUnitFun() {
+        val definition = MockkDefinition(
+            typeToMock = ResolvableType.forClass(UnitReturningService::class.java),
+            relaxUnitFun = true
+        )
+        val mock = definition.createMock<Any>()
+        assertThat(mock).isInstanceOf(UnitReturningService::class.java)
+
+        // test that it's indeed relaxUnitFun
+        assertThatCode { (mock as UnitReturningService).greet() }.doesNotThrowAnyException()
+        // and not relaxed
+        assertThatExceptionOfType(MockKException::class.java).isThrownBy { (mock as UnitReturningService).greetWithResult() }
+    }
+
     companion object {
         private val EXAMPLE_SERVICE_TYPE = ResolvableType.forClass(ExampleService::class.java)
     }
 
+    interface UnitReturningService {
+        fun greet(): Unit
+        fun greetWithResult(): String
+    }
 }

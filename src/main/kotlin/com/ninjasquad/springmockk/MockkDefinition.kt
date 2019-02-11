@@ -20,6 +20,7 @@ class MockkDefinition(
     extraInterfaces: Array<KClass<*>> = emptyArray(),
     clear: MockkClear = MockkClear.AFTER,
     val relaxed: Boolean = false,
+    val relaxUnitFun: Boolean = false,
     qualifier: QualifierDefinition? = null
 ) : Definition(name, clear, qualifier) {
 
@@ -37,7 +38,8 @@ class MockkDefinition(
             type = resolvedType.kotlin as KClass<T>,
             name = name,
             moreInterfaces = *extraInterfaces.toTypedArray(),
-            relaxed = relaxed
+            relaxed = relaxed,
+            relaxUnitFun = relaxUnitFun
         ).clear(this.clear)
     }
 

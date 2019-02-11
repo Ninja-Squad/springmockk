@@ -125,4 +125,10 @@ public @interface MockkBean {
      * @return true if relaxed, false otherwise
      */
     boolean relaxed() default false;
+
+    /**
+     * Specifies if the created mock will have relaxed <code>Unit</code>-returning functions
+     * @return true if relaxed, false otherwise
+     */
+    boolean relaxUnitFun() default false;
 }
