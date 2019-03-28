@@ -40,7 +40,6 @@ class MockkTestExecutionListener : AbstractTestExecutionListener() {
 
     private fun hasMockkAnnotations(testContext: TestContext): Boolean {
         return testContext.testClass.kotlin.memberProperties.any { property ->
-            println(property)
             property.annotations.any {
                 it.annotationClass.java.name.startsWith("io.mockk")
             }
