@@ -73,15 +73,14 @@ dependencyManagement {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-
-    implementation("org.springframework.boot:spring-boot-starter-test") {
-        exclude(module = "junit")
-        exclude(module = "mockito-core")
-    }
     api("io.mockk:mockk:1.9.1")
 
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.springframework.boot:spring-boot-test")
+    implementation("org.springframework:spring-test")
+
+    testImplementation("org.assertj:assertj-core")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
 
