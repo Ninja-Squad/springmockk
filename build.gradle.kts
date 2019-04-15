@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     val kotlinVersion = "1.3.11"
 
-    java
+    `java-library`
     kotlin("jvm") version kotlinVersion
     `maven-publish`
     id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
@@ -80,7 +80,7 @@ dependencies {
         exclude(module = "junit")
         exclude(module = "mockito-core")
     }
-    implementation("io.mockk:mockk:1.9.1")
+    api("io.mockk:mockk:1.9.1")
 
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("org.junit.jupiter:junit-jupiter-params")
