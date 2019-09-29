@@ -1,6 +1,6 @@
 package com.ninjasquad.springmockk
 
-import java.util.concurrent.ConcurrentHashMap
+import java.util.IdentityHashMap
 
 /**
  * Clear strategy used on a mockk bean, applied to a mock via the
@@ -28,7 +28,10 @@ enum class MockkClear {
     NONE;
 
     companion object {
-        private val clearModesByMock = ConcurrentHashMap<Any, MockkClear>()
+        // this has to be an identity hash map. If it's a HashMap, then hashCode() is called on the mocks,
+        // and confirmVerified calls fail. See https://github.com/Ninja-Squad/springmockk/issues/27
+        // and see MockkClearIntegrationTests
+        private val clearModesByMock = IdentityHashMap<Any, MockkClear>()
 
         internal fun set(mock: Any, clear: MockkClear) {
             require(mock.isMock) { "Only mocks can be cleared" }
