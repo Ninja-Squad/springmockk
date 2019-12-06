@@ -20,6 +20,8 @@ description = "MockBean and SpyBean, but for MockK instead of Mockito"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
+    withJavadocJar()
+    withSourcesJar()
 }
 
 repositories {
@@ -46,20 +48,7 @@ tasks {
         useJUnitPlatform()
     }
 
-    jar {
-        manifest(sharedManifest)
-    }
-
-    register<Jar>("sourcesJar") {
-        archiveClassifier.set("sources")
-        from(sourceSets.main.get().allSource)
-        manifest(sharedManifest)
-    }
-
-    register<Jar>("javadocJar") {
-        dependsOn(javadoc)
-        archiveClassifier.set("javadoc")
-        from(javadoc.get().destinationDir)
+    withType<Jar> {
         manifest(sharedManifest)
     }
 }
@@ -91,8 +80,6 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             from(components["java"])
-            artifact(tasks["sourcesJar"])
-            artifact(tasks["javadocJar"])
 
             pom {
                 name.set(project.name)
