@@ -1,14 +1,14 @@
 package com.ninjasquad.springmockk
 
 import org.springframework.core.ResolvableType
-import org.springframework.core.annotation.AnnotationUtils
+import org.springframework.core.annotation.MergedAnnotations
+import org.springframework.core.annotation.MergedAnnotations.SearchStrategy
 import org.springframework.util.Assert
 import org.springframework.util.ReflectionUtils
 import org.springframework.util.StringUtils
 import java.lang.reflect.AnnotatedElement
 import java.lang.reflect.Field
-import java.util.*
-import kotlin.collections.LinkedHashSet
+import java.util.Collections
 import kotlin.reflect.KClass
 
 /**
@@ -37,20 +37,16 @@ class DefinitionsParser(existing: Collection<Definition> = emptySet()) {
     }
 
     private fun parseElement(element: AnnotatedElement) {
-        for (annotation in AnnotationUtils.getRepeatableAnnotations(
+        val annotations = MergedAnnotations.from(
             element,
-            MockkBean::class.java,
-            MockkBeans::class.java
-        )) {
-            parseMockkBeanAnnotation(annotation, element)
-        }
-        for (annotation in AnnotationUtils.getRepeatableAnnotations(
-            element,
-            SpykBean::class.java,
-            SpykBeans::class.java
-        )) {
-            parseSpykBeanAnnotation(annotation, element)
-        }
+            SearchStrategy.SUPERCLASS
+        )
+        annotations.stream(MockkBean::class.java)
+            .map { it.synthesize() }
+            .forEach {  parseMockkBeanAnnotation(it, element) }
+        annotations.stream(SpykBean::class.java)
+            .map { it.synthesize() }
+            .forEach { parseSpykBeanAnnotation(it, element) }
     }
 
     private fun parseMockkBeanAnnotation(annotation: MockkBean, element: AnnotatedElement) {

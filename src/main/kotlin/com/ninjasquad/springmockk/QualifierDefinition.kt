@@ -3,10 +3,11 @@ package com.ninjasquad.springmockk
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
 import org.springframework.beans.factory.config.DependencyDescriptor
 import org.springframework.beans.factory.support.RootBeanDefinition
-import org.springframework.core.annotation.AnnotationUtils
+import org.springframework.core.annotation.MergedAnnotations
 import java.lang.reflect.AnnotatedElement
 import java.lang.reflect.Field
-import java.util.*
+import java.util.HashSet
+
 
 /**
  * Definition of a Spring [Qualifier](@Qualifier).
@@ -63,18 +64,20 @@ class QualifierDefinition(private val field: Field, private val annotations: Set
             val candidates = field.declaredAnnotations
             val annotations = HashSet<Annotation>(candidates.size)
             for (candidate in candidates) {
-                if (!isMockOrSpyAnnotation(candidate)) {
+                if (!isMockOrSpyAnnotation(candidate.annotationClass.java)) {
                     annotations.add(candidate)
                 }
             }
             return annotations
         }
 
-        private fun isMockOrSpyAnnotation(candidate: Annotation): Boolean {
-            val annotationClass = candidate.annotationClass
-            return (annotationClass == MockkBean::class || annotationClass == SpykBean::class
-                || AnnotationUtils.isAnnotationMetaPresent(annotationClass.java, MockkBean::class.java)
-                || AnnotationUtils.isAnnotationMetaPresent(annotationClass.java, SpykBean::class.java))
+        private fun isMockOrSpyAnnotation(type: Class<out Annotation>): Boolean {
+            if (type.equals(MockkBean::class.java) || type.equals(SpykBean::class.java)) {
+                return true
+            }
+            val metaAnnotations = MergedAnnotations.from(type)
+            return (metaAnnotations.isPresent(MockkBean::class.java)
+                || metaAnnotations.isPresent(SpykBean::class.java))
         }
     }
 }

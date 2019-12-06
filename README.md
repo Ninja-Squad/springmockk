@@ -42,7 +42,7 @@ class GreetingControllerTest {
 
 Add this to your dependencies:
 
-    testImplementation("com.ninja-squad:springmockk:1.1.3")
+    testImplementation("com.ninja-squad:springmockk:2.2.0")
 
 If you want to make sure Mockito (and the standard `MockBean` and `SpyBean` annotations) is not used, you can also exclude the mockito dependency:
 
@@ -57,7 +57,7 @@ Add this to your dependencies:
     <dependency>
       <groupId>com.ninja-squad</groupId>
       <artifactId>springmockk</artifactId>
-      <version>1.1.3</version>
+      <version>2.2.0</version>
       <scope>test</scope>
     </dependency>
 
@@ -76,6 +76,11 @@ Add this to your dependencies:
    This doesn't matter much until you use a custom qualifier annotation.
    In that case, make sure that it targets fields and not properties, or use `@field:YourQualifier` to apply it on your beans.
 
+## Versions compatibility
+
+ - Version 2.x of SpringMockK: compatible with Spring Boot 2.2.x
+ - Version 1.x of SpringMockK: compatible with Spring Boot 2.1.x 
+ 
 ## How to build
 
 ```

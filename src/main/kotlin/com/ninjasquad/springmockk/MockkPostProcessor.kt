@@ -3,8 +3,19 @@ package com.ninjasquad.springmockk
 import org.springframework.aop.scope.ScopedProxyUtils
 import org.springframework.beans.BeansException
 import org.springframework.beans.PropertyValues
-import org.springframework.beans.factory.*
-import org.springframework.beans.factory.config.*
+import org.springframework.beans.factory.BeanClassLoaderAware
+import org.springframework.beans.factory.BeanCreationException
+import org.springframework.beans.factory.BeanFactory
+import org.springframework.beans.factory.BeanFactoryAware
+import org.springframework.beans.factory.BeanFactoryUtils
+import org.springframework.beans.factory.FactoryBean
+import org.springframework.beans.factory.NoUniqueBeanDefinitionException
+import org.springframework.beans.factory.config.BeanDefinition
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor
+import org.springframework.beans.factory.config.BeanPostProcessor
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
+import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter
+import org.springframework.beans.factory.config.RuntimeBeanReference
 import org.springframework.beans.factory.support.BeanDefinitionRegistry
 import org.springframework.beans.factory.support.DefaultBeanNameGenerator
 import org.springframework.beans.factory.support.RootBeanDefinition
@@ -14,10 +25,17 @@ import org.springframework.core.Ordered
 import org.springframework.core.PriorityOrdered
 import org.springframework.core.ResolvableType
 import org.springframework.test.context.junit4.SpringRunner
-import org.springframework.util.*
+import org.springframework.util.Assert
+import org.springframework.util.ClassUtils
+import org.springframework.util.ObjectUtils
+import org.springframework.util.ReflectionUtils
+import org.springframework.util.StringUtils
 import java.beans.PropertyDescriptor
 import java.lang.reflect.Field
-import java.util.*
+import java.util.HashMap
+import java.util.LinkedHashMap
+import java.util.LinkedHashSet
+import java.util.TreeSet
 
 /**
  * A [BeanFactoryPostProcessor] used to register and inject
@@ -34,8 +52,6 @@ import java.util.*
  */
 class MockkPostProcessor(private val definitions: Set<Definition>) : InstantiationAwareBeanPostProcessorAdapter(),
     BeanClassLoaderAware, BeanFactoryAware, BeanFactoryPostProcessor, Ordered {
-
-    private val FACTORY_BEAN_OBJECT_TYPE = "factoryBeanObjectType"
 
     private val CONFIGURATION_CLASS_ATTRIBUTE = Conventions.getQualifiedAttributeName(
         ConfigurationClassPostProcessor::class.java,
@@ -230,7 +246,7 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
         for (beanName in beanFactory.getBeanNamesForType(FactoryBean::class.java)) {
             val transformedBeanName = BeanFactoryUtils.transformedBeanName(beanName)
             val beanDefinition = beanFactory.getBeanDefinition(transformedBeanName)
-            if (typeName == beanDefinition.getAttribute(FACTORY_BEAN_OBJECT_TYPE)) {
+            if (typeName == beanDefinition.getAttribute(FactoryBean.OBJECT_TYPE_ATTRIBUTE)) {
                 beans.add(transformedBeanName)
             }
         }
