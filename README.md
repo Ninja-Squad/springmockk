@@ -41,25 +41,28 @@ class GreetingControllerTest {
 ### Gradle (Kotlin DSL)
 
 Add this to your dependencies:
-
-    testImplementation("com.ninja-squad:springmockk:2.0.0")
+```gradle
+testImplementation("com.ninja-squad:springmockk:2.0.0")
+```
 
 If you want to make sure Mockito (and the standard `MockBean` and `SpyBean` annotations) is not used, you can also exclude the mockito dependency:
-
-    testImplementation("org.springframework.boot:spring-boot-starter-test") {
-        exclude(module = "mockito-core")
-    }
+```gradle
+testImplementation("org.springframework.boot:spring-boot-starter-test") {
+    exclude(module = "mockito-core")
+}
+```
 
 ### Maven
 
 Add this to your dependencies:
-
-    <dependency>
-      <groupId>com.ninja-squad</groupId>
-      <artifactId>springmockk</artifactId>
-      <version>2.0.0</version>
-      <scope>test</scope>
-    </dependency>
+```xml
+<dependency>
+  <groupId>com.ninja-squad</groupId>
+  <artifactId>springmockk</artifactId>
+  <version>2.0.0</version>
+  <scope>test</scope>
+</dependency>
+```
 
 ## Differences with Mockito
 
