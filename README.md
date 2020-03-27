@@ -41,12 +41,12 @@ class GreetingControllerTest {
 ### Gradle (Kotlin DSL)
 
 Add this to your dependencies:
-```gradle
+```kotlin
 testImplementation("com.ninja-squad:springmockk:2.0.0")
 ```
 
 If you want to make sure Mockito (and the standard `MockBean` and `SpyBean` annotations) is not used, you can also exclude the mockito dependency:
-```gradle
+```kotlin
 testImplementation("org.springframework.boot:spring-boot-starter-test") {
     exclude(module = "mockito-core")
 }
