@@ -57,6 +57,8 @@ class MockkDefinition(
 
         if ((this.typeToMock as Any) != other.typeToMock) return false
         if (extraInterfaces != other.extraInterfaces) return false
+        if (relaxed != other.relaxed) return false
+        if (relaxUnitFun != other.relaxUnitFun) return false
 
         return true
     }
@@ -65,6 +67,8 @@ class MockkDefinition(
         var result = super.hashCode()
         result = MULTIPLER * result + typeToMock.hashCode()
         result = MULTIPLER * result + extraInterfaces.hashCode()
+        result = MULTIPLER * result + relaxed.hashCode()
+        result = MULTIPLER * result + relaxUnitFun.hashCode()
         return result
     }
 }
