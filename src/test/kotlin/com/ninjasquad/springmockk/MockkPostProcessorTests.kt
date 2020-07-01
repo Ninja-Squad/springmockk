@@ -6,14 +6,23 @@ import com.ninjasquad.springmockk.example.RealExampleService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatIllegalStateException
 import org.junit.jupiter.api.Test
+import org.springframework.beans.BeanWrapper
+import org.springframework.beans.BeansException
 import org.springframework.beans.factory.FactoryBean
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
 import org.springframework.beans.factory.getBean
+import org.springframework.beans.factory.support.BeanDefinitionRegistry
 import org.springframework.beans.factory.support.RootBeanDefinition
+import org.springframework.boot.test.mock.mockito.MockitoPostProcessor
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
+import org.springframework.core.Ordered
+import org.springframework.test.util.ReflectionTestUtils
+import org.springframework.util.Assert
 
 
 /**
@@ -112,6 +121,16 @@ class MockkPostProcessorTests {
         assertThat(context.getBean<ExampleService>().isMock).isFalse()
         assertThat(context.getBean<ExampleService>("examplePrimary").isMock).isFalse()
         assertThat(context.getBean<ExampleService>("exampleQualified").isMock).isTrue()
+    }
+
+    @Test
+    fun postProcessorShouldNotTriggerEarlyInitialization() {
+        val context = AnnotationConfigApplicationContext()
+        context.register(FactoryBeanRegisteringPostProcessor::class.java)
+        MockitoPostProcessor.register(context)
+        context.register(TestBeanFactoryPostProcessor::class.java)
+        context.register(EagerInitBean::class.java)
+        context.refresh()
     }
 
     @Configuration
@@ -249,6 +268,14 @@ class MockkPostProcessorTests {
 
     }
 
+    @Configuration(proxyBeanMethods = false)
+    internal class EagerInitBean {
+
+        @MockkBean
+        lateinit var service: ExampleService
+
+    }
+
     internal class TestFactoryBean : FactoryBean<Any> {
 
         override fun getObject(): Any? {
@@ -263,6 +290,29 @@ class MockkPostProcessorTests {
             return true
         }
 
+    }
+
+    internal class FactoryBeanRegisteringPostProcessor : BeanFactoryPostProcessor, Ordered {
+
+        override fun postProcessBeanFactory(beanFactory: ConfigurableListableBeanFactory) {
+            val beanDefinition = RootBeanDefinition(TestFactoryBean::class.java)
+            (beanFactory as BeanDefinitionRegistry).registerBeanDefinition("test", beanDefinition)
+        }
+
+        override fun getOrder(): Int {
+            return Ordered.HIGHEST_PRECEDENCE
+        }
+    }
+
+    internal class TestBeanFactoryPostProcessor : BeanFactoryPostProcessor {
+
+        override fun postProcessBeanFactory(beanFactory: ConfigurableListableBeanFactory) {
+            val cache = ReflectionTestUtils.getField(
+                beanFactory,
+                "factoryBeanInstanceCache"
+            ) as Map<*, *>
+            Assert.isTrue(cache.isEmpty(), "Early initialization of factory bean triggered.")
+        }
     }
 
     internal interface SomeInterface

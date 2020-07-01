@@ -241,9 +241,9 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
         beanFactory: ConfigurableListableBeanFactory,
         type: ResolvableType
     ): Set<String> {
-        val beans = LinkedHashSet(beanFactory.getBeanNamesForType(type).toList())
+        val beans = LinkedHashSet(beanFactory.getBeanNamesForType(type, true, false).toList())
         val typeName = type.resolve(Any::class.java).name
-        for (beanName in beanFactory.getBeanNamesForType(FactoryBean::class.java)) {
+        for (beanName in beanFactory.getBeanNamesForType(FactoryBean::class.java, true, false)) {
             val transformedBeanName = BeanFactoryUtils.transformedBeanName(beanName)
             val beanDefinition = beanFactory.getBeanDefinition(transformedBeanName)
             if (typeName == beanDefinition.getAttribute(FactoryBean.OBJECT_TYPE_ATTRIBUTE)) {
@@ -335,12 +335,7 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
         return spy
     }
 
-    override fun postProcessPropertyValues(
-        pvs: PropertyValues,
-        pds: Array<PropertyDescriptor>,
-        bean: Any,
-        beanName: String
-    ): PropertyValues {
+    override fun postProcessProperties(pvs: PropertyValues, bean: Any, beanName: String): PropertyValues {
         ReflectionUtils.doWithFields(bean.javaClass) { field -> postProcessField(bean, field) }
         return pvs
     }

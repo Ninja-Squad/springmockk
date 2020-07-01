@@ -32,25 +32,25 @@ class DefinitionsParser(existing: Collection<Definition> = emptySet()) {
         get() = Collections.unmodifiableSet(definitions)
 
     fun parse(source: Class<*>) {
-        parseElement(source)
-        ReflectionUtils.doWithFields(source, this::parseElement)
+        parseElement(source, null)
+        ReflectionUtils.doWithFields(source) { element -> this.parseElement(element, source) }
     }
 
-    private fun parseElement(element: AnnotatedElement) {
+    private fun parseElement(element: AnnotatedElement, source: Class<*>?) {
         val annotations = MergedAnnotations.from(
             element,
             SearchStrategy.SUPERCLASS
         )
         annotations.stream(MockkBean::class.java)
             .map { it.synthesize() }
-            .forEach {  parseMockkBeanAnnotation(it, element) }
+            .forEach {  parseMockkBeanAnnotation(it, element, source) }
         annotations.stream(SpykBean::class.java)
             .map { it.synthesize() }
-            .forEach { parseSpykBeanAnnotation(it, element) }
+            .forEach { parseSpykBeanAnnotation(it, element, source) }
     }
 
-    private fun parseMockkBeanAnnotation(annotation: MockkBean, element: AnnotatedElement) {
-        val typesToMock = getOrDeduceTypes(element, annotation.value)
+    private fun parseMockkBeanAnnotation(annotation: MockkBean, element: AnnotatedElement, source: Class<*>?) {
+        val typesToMock = getOrDeduceTypes(element, annotation.value, source)
         check(!typesToMock.isEmpty()) { "Unable to deduce type to mock from $element" }
         if (StringUtils.hasLength(annotation.name)) {
             check(typesToMock.size == 1) { "The name attribute can only be used when mocking a single class" }
@@ -69,8 +69,8 @@ class DefinitionsParser(existing: Collection<Definition> = emptySet()) {
         }
     }
 
-    private fun parseSpykBeanAnnotation(annotation: SpykBean, element: AnnotatedElement) {
-        val typesToSpy = getOrDeduceTypes(element, annotation.value)
+    private fun parseSpykBeanAnnotation(annotation: SpykBean, element: AnnotatedElement, source: Class<*>?) {
+        val typesToSpy = getOrDeduceTypes(element, annotation.value, source)
         Assert.state(
             !typesToSpy.isEmpty()
         ) { "Unable to deduce type to spy from $element" }
@@ -107,14 +107,15 @@ class DefinitionsParser(existing: Collection<Definition> = emptySet()) {
 
     private fun getOrDeduceTypes(
         element: AnnotatedElement,
-        value: Array<out KClass<*>>
+        value: Array<out KClass<*>>,
+        source: Class<*>?
     ): Set<ResolvableType> {
         val types = LinkedHashSet<ResolvableType>()
         for (clazz in value) {
             types.add(ResolvableType.forClass(clazz.java))
         }
         if (types.isEmpty() && element is Field) {
-            types.add(ResolvableType.forField(element))
+            types.add(ResolvableType.forField(element, source!!))
         }
         return types
     }
