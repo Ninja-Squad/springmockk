@@ -8,8 +8,10 @@ import org.springframework.util.ReflectionUtils
 import org.springframework.util.StringUtils
 import java.lang.reflect.AnnotatedElement
 import java.lang.reflect.Field
+import java.lang.reflect.TypeVariable
 import java.util.Collections
 import kotlin.reflect.KClass
+
 
 /**
  * Parser to create {@link MockkDefinition} and {@link SpykDefinition} instances from
@@ -115,7 +117,12 @@ class DefinitionsParser(existing: Collection<Definition> = emptySet()) {
             types.add(ResolvableType.forClass(clazz.java))
         }
         if (types.isEmpty() && element is Field) {
-            types.add(ResolvableType.forField(element, source!!))
+            val field = element
+            types.add(if (field.genericType is TypeVariable<*>) {
+                ResolvableType.forField(field, source!!)
+            } else {
+                ResolvableType.forField(field)
+            })
         }
         return types
     }
@@ -123,5 +130,4 @@ class DefinitionsParser(existing: Collection<Definition> = emptySet()) {
     fun getField(definition: Definition): Field? {
         return this.definitionFields[definition]
     }
-
 }
