@@ -14,8 +14,9 @@ import org.springframework.beans.factory.config.BeanDefinition
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor
 import org.springframework.beans.factory.config.BeanPostProcessor
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory
-import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter
+import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor
 import org.springframework.beans.factory.config.RuntimeBeanReference
+import org.springframework.beans.factory.config.SmartInstantiationAwareBeanPostProcessor
 import org.springframework.beans.factory.support.BeanDefinitionRegistry
 import org.springframework.beans.factory.support.DefaultBeanNameGenerator
 import org.springframework.beans.factory.support.RootBeanDefinition
@@ -50,7 +51,7 @@ import java.util.TreeSet
  * @author Andreas Neiser
  * @author JB Nizet
  */
-class MockkPostProcessor(private val definitions: Set<Definition>) : InstantiationAwareBeanPostProcessorAdapter(),
+class MockkPostProcessor(private val definitions: Set<Definition>) : InstantiationAwareBeanPostProcessor,
     BeanClassLoaderAware, BeanFactoryAware, BeanFactoryPostProcessor, Ordered {
 
     private val CONFIGURATION_CLASS_ATTRIBUTE = Conventions.getQualifiedAttributeName(
@@ -378,7 +379,7 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
      * separate processor so that it can be ordered above AOP post processors.
      */
     internal class SpyPostProcessor(private val mockkPostProcessor: MockkPostProcessor) :
-        InstantiationAwareBeanPostProcessorAdapter(),
+        SmartInstantiationAwareBeanPostProcessor,
         PriorityOrdered {
 
         override fun getOrder(): Int {

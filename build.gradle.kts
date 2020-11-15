@@ -1,21 +1,21 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    val kotlinVersion = "1.3.61"
+    val kotlinVersion = "1.4.10"
 
     `java-library`
     kotlin("jvm") version kotlinVersion
     `maven-publish`
     id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.noarg") version kotlinVersion
-    id("org.springframework.boot") version "2.2.0.RELEASE" apply false
-    id("io.spring.dependency-management") version "1.0.8.RELEASE"
+    id("org.springframework.boot") version "2.4.0" apply false
+    id("io.spring.dependency-management") version "1.0.9.RELEASE"
     id("org.jetbrains.dokka") version "0.9.17"
     id("com.jfrog.bintray") version "1.8.4"
 }
 
 group = "com.ninja-squad"
-version = "2.0.3"
+version = "3.0.0-SNAPSHOT"
 description = "MockBean and SpyBean, but for MockK instead of Mockito"
 
 java {
@@ -56,13 +56,13 @@ tasks {
 dependencyManagement {
     imports {
         mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES) {
-            bomProperty("kotlin.version", "1.3.61")
+            bomProperty("kotlin.version", "1.4.10")
         }
     }
 }
 
 dependencies {
-    api("io.mockk:mockk:1.9.3")
+    api("io.mockk:mockk:1.10.2")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlin:kotlin-reflect")

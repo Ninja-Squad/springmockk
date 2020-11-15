@@ -3,6 +3,7 @@ package com.ninjasquad.springmockk
 import org.springframework.test.context.ContextConfigurationAttributes
 import org.springframework.test.context.ContextCustomizer
 import org.springframework.test.context.ContextCustomizerFactory
+import org.springframework.test.context.TestContextAnnotationUtils
 
 /**
  * A {@link ContextCustomizerFactory} to add MockK support.
@@ -18,7 +19,14 @@ class MockkContextCustomizerFactory : ContextCustomizerFactory {
         // We gather the explicit mock definitions here since they form part of the
         // MergedContextConfiguration key. Different mocks need to have a different key.
         val parser = DefinitionsParser()
-        parser.parse(testClass)
+        parseDefinitions(testClass, parser)
         return MockkContextCustomizer(parser.parsedDefinitions)
+    }
+
+    private fun parseDefinitions(testClass: Class<*>, parser: DefinitionsParser) {
+        parser.parse(testClass)
+        if (TestContextAnnotationUtils.searchEnclosingClass(testClass)) {
+            parseDefinitions(testClass.enclosingClass, parser)
+        }
     }
 }

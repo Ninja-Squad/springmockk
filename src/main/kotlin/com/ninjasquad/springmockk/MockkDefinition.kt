@@ -37,7 +37,7 @@ class MockkDefinition(
         return mockkClass(
             type = resolvedType.kotlin as KClass<T>,
             name = name,
-            moreInterfaces = *extraInterfaces.toTypedArray(),
+            moreInterfaces = extraInterfaces.toTypedArray(),
             relaxed = relaxed,
             relaxUnitFun = relaxUnitFun
         ).clear(this.clear)

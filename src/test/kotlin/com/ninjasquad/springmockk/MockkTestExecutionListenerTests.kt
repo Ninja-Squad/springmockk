@@ -11,7 +11,6 @@ import org.springframework.test.context.TestContext
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener
 import java.io.InputStream
 
-
 /**
  * Tests for [MockkTestExecutionListener].
  *
@@ -31,7 +30,6 @@ class MockkTestExecutionListenerTests {
     @BeforeEach
     fun setup() {
         MockKAnnotations.init(this)
-        every { applicationContext.getBean<MockkPostProcessor>() } returns this.postProcessor
     }
 
     @Test
@@ -43,39 +41,47 @@ class MockkTestExecutionListenerTests {
 
     @Test
     fun prepareTestInstanceShouldInjectMockBean() {
+        every { applicationContext.getBean<MockkPostProcessor>() } returns this.postProcessor
         val instance = WithMockkBean()
-        this.listener.prepareTestInstance(mockTestContext(instance))
-        verify { postProcessor.inject(
-            withArg { assertThat(it.name).isEqualTo("mockBean") },
-            instance,
-            any<MockkDefinition>()
-        )}
+        val testContext = mockTestContext(instance)
+        every { testContext.getApplicationContext() } returns this.applicationContext;
+        this.listener.prepareTestInstance(testContext)
+        verify {
+            postProcessor.inject(
+                withArg { assertThat(it.name).isEqualTo("mockBean") },
+                instance,
+                any<MockkDefinition>()
+            )
+        }
     }
 
     @Test
     fun beforeTestMethodShouldDoNothingWhenDirtiesContextAttributeIsNotSet() {
-        val instance = WithMockkBean()
-        val mockTestContext = mockTestContext(instance)
+        val testContext = mockk<TestContext>()
         every {
-            mockTestContext.getAttribute(DependencyInjectionTestExecutionListener.REINJECT_DEPENDENCIES_ATTRIBUTE)
+            testContext.getAttribute(DependencyInjectionTestExecutionListener.REINJECT_DEPENDENCIES_ATTRIBUTE)
         } returns null
-        this.listener.beforeTestMethod(mockTestContext(instance))
+        this.listener.beforeTestMethod(testContext)
         confirmVerified(postProcessor)
     }
 
     @Test
     fun beforeTestMethodShouldInjectMockBeanWhenDirtiesContextAttributeIsSet() {
+        every { applicationContext.getBean(MockkPostProcessor::class.java) } returns postProcessor
         val instance = WithMockkBean()
         val mockTestContext = mockTestContext(instance)
+        every { mockTestContext.getApplicationContext() } returns this.applicationContext;
         every {
             mockTestContext.getAttribute(DependencyInjectionTestExecutionListener.REINJECT_DEPENDENCIES_ATTRIBUTE)
         } returns true
         this.listener.beforeTestMethod(mockTestContext)
-        verify { postProcessor.inject(
-            withArg { assertThat(it.name).isEqualTo("mockBean") },
-            instance,
-            any<MockkDefinition>()
-        )}
+        verify {
+            postProcessor.inject(
+                withArg { assertThat(it.name).isEqualTo("mockBean") },
+                instance,
+                any<MockkDefinition>()
+            )
+        }
     }
 
     private fun mockTestContext(instance: Any): TestContext {
