@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.ninjasquad.gradle.MavenSyncTask
 
 plugins {
     val kotlinVersion = "1.4.10"
@@ -6,16 +7,16 @@ plugins {
     `java-library`
     kotlin("jvm") version kotlinVersion
     `maven-publish`
+    signing
     id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.noarg") version kotlinVersion
     id("org.springframework.boot") version "2.4.0" apply false
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
     id("org.jetbrains.dokka") version "0.10.1"
-    id("com.jfrog.bintray") version "1.8.5"
 }
 
 group = "com.ninja-squad"
-version = "3.0.0"
+version = "3.0.1"
 description = "MockBean and SpyBean, but for MockK instead of Mockito"
 
 java {
@@ -36,6 +37,11 @@ val sharedManifest = Action<Manifest> {
     )
 }
 
+val bintrayUser = "ninjasquad"
+val bintrayRepo = "maven"
+val bintrayPackage = project.name
+val bintrayKey = project.findProperty("bintray.key")?.toString() ?: ""
+
 tasks {
     withType(KotlinCompile::class.java) {
         kotlinOptions {
@@ -50,6 +56,27 @@ tasks {
 
     withType<Jar> {
         manifest(sharedManifest)
+    }
+
+    register("syncToMavenCentral", MavenSyncTask::class) {
+        mustRunAfter("publishMavenPublicationToBintrayRepository")
+        group = "publishing"
+        description = "Syncs to Maven Central"
+
+        sonatypeUsername = project.findProperty("sonatypeUsername")?.toString() ?: ""
+        sonatypePassword = project.findProperty("sonatypePassword")?.toString() ?: ""
+        bintrayUsername = bintrayUser
+        bintrayPassword = bintrayKey
+        bintrayRepoName = bintrayRepo
+        bintrayPackageName = bintrayPackage
+    }
+
+    register("publishAndSyncToMavenCentral", MavenSyncTask::class) {
+        group = "publishing"
+        description = "Publishes to Bintray, then syncs to Maven Central"
+
+        dependsOn("publishMavenPublicationToBintrayRepository")
+        dependsOn("syncToMavenCentral")
     }
 }
 
@@ -114,34 +141,20 @@ publishing {
     }
     repositories {
         maven {
+            name = "build"
             url = uri("$buildDir/repo")
+        }
+        maven {
+            name = "bintray"
+            url = uri("https://api.bintray.com/maven/$bintrayUser/$bintrayRepo/$bintrayPackage/;publish=1")
+            credentials {
+                username = bintrayUser
+                password = bintrayKey
+            }
         }
     }
 }
 
-bintray {
-    user = "ninjasquad"
-    key = project.findProperty("bintray.key") as String?
-    setPublications("maven")
-    publish = true
-    pkg = PackageConfig().apply {
-        repo = "maven"
-        name = project.name
-        desc = project.description
-        websiteUrl = "https://github.com/Ninja-Squad/springmockk"
-        issueTrackerUrl = "https://github.com/Ninja-Squad/springmockk/issues"
-        vcsUrl = "https://github.com/Ninja-Squad/springmockk"
-        setLicenses("Apache-2.0")
-        version = VersionConfig().apply {
-            gpg = GpgConfig().apply {
-                sign = true
-                passphrase = project.findProperty("signing.password") as String?
-            }
-            mavenCentralSync = MavenCentralSyncConfig().apply {
-                sync = true
-                user = project.findProperty("sonatypeUsername") as String?
-                password = project.findProperty("sonatypePassword") as String?
-            }
-        }
-    }
+signing {
+    sign(publishing.publications["maven"])
 }
