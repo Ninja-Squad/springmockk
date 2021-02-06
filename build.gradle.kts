@@ -1,5 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import com.ninjasquad.gradle.MavenSyncTask
+import java.time.Duration
 
 plugins {
     val kotlinVersion = "1.4.10"
@@ -13,11 +13,17 @@ plugins {
     id("org.springframework.boot") version "2.4.0" apply false
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
     id("org.jetbrains.dokka") version "0.10.1"
+    // see https://github.com/rwinch/gradle-publish-ossrh-sample for the release mechanism
+    id("io.codearte.nexus-staging") version "0.22.0"
+    id("de.marcphilipp.nexus-publish") version "0.4.0"
 }
 
 group = "com.ninja-squad"
 version = "3.0.1"
 description = "MockBean and SpyBean, but for MockK instead of Mockito"
+
+val sonatypeUsername = project.findProperty("sonatypeUsername")?.toString() ?: ""
+val sonatypePassword = project.findProperty("sonatypePassword")?.toString() ?: ""
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
@@ -37,11 +43,6 @@ val sharedManifest = Action<Manifest> {
     )
 }
 
-val bintrayUser = "ninjasquad"
-val bintrayRepo = "maven"
-val bintrayPackage = project.name
-val bintrayKey = project.findProperty("bintray.key")?.toString() ?: ""
-
 tasks {
     withType(KotlinCompile::class.java) {
         kotlinOptions {
@@ -58,25 +59,27 @@ tasks {
         manifest(sharedManifest)
     }
 
-    register("syncToMavenCentral", MavenSyncTask::class) {
-        mustRunAfter("publishMavenPublicationToBintrayRepository")
-        group = "publishing"
-        description = "Syncs to Maven Central"
-
-        sonatypeUsername = project.findProperty("sonatypeUsername")?.toString() ?: ""
-        sonatypePassword = project.findProperty("sonatypePassword")?.toString() ?: ""
-        bintrayUsername = bintrayUser
-        bintrayPassword = bintrayKey
-        bintrayRepoName = bintrayRepo
-        bintrayPackageName = bintrayPackage
+    named("closeRepository") {
+        mustRunAfter("publishToSonatype")
+    }
+    named("closeAndReleaseRepository") {
+        mustRunAfter("publishToSonatype")
     }
 
-    register("publishAndSyncToMavenCentral", MavenSyncTask::class) {
-        group = "publishing"
-        description = "Publishes to Bintray, then syncs to Maven Central"
+    register("publishToSonatypeAndClose") {
+        group = "Maven Central Release"
+        description = "Published to the Sonatype OSSRH repository and closes, but does not do the final release to Maven Central"
 
-        dependsOn("publishMavenPublicationToBintrayRepository")
-        dependsOn("syncToMavenCentral")
+        dependsOn("publishToSonatype")
+        dependsOn("closeRepository")
+    }
+
+    register("publishToSonatypeAndCloseAndReleaseToMavenCentral") {
+        group = "Maven Central Release"
+        description = "Publishes to the Sonatype OSSRH repository and closes, then does the final release to Maven Central"
+
+        dependsOn("publishToSonatype")
+        dependsOn("closeAndReleaseRepository")
     }
 }
 
@@ -144,17 +147,26 @@ publishing {
             name = "build"
             url = uri("$buildDir/repo")
         }
-        maven {
-            name = "bintray"
-            url = uri("https://api.bintray.com/maven/$bintrayUser/$bintrayRepo/$bintrayPackage/;publish=1")
-            credentials {
-                username = bintrayUser
-                password = bintrayKey
-            }
-        }
     }
 }
 
 signing {
     sign(publishing.publications["maven"])
+}
+
+nexusStaging {
+    username = sonatypeUsername
+    password = sonatypePassword
+    repositoryDescription = "Release ${project.group} ${project.version}"
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            username.set(sonatypeUsername)
+            password.set(sonatypePassword)
+        }
+    }
+    connectTimeout.set(Duration.ofMinutes(3))
+    clientTimeout.set(Duration.ofMinutes(3))
 }
