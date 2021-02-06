@@ -19,7 +19,7 @@ plugins {
 }
 
 group = "com.ninja-squad"
-version = "3.0.1"
+version = "3.0.2"
 description = "MockBean and SpyBean, but for MockK instead of Mockito"
 
 val sonatypeUsername = project.findProperty("sonatypeUsername")?.toString() ?: ""
