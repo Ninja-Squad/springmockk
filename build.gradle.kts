@@ -13,9 +13,7 @@ plugins {
     id("org.springframework.boot") version "2.4.0" apply false
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
     id("org.jetbrains.dokka") version "0.10.1"
-    // see https://github.com/rwinch/gradle-publish-ossrh-sample for the release mechanism
-    id("io.codearte.nexus-staging") version "0.22.0"
-    id("de.marcphilipp.nexus-publish") version "0.4.0"
+    id("io.github.gradle-nexus.publish-plugin") version "1.0.0"
 }
 
 group = "com.ninja-squad"
@@ -59,19 +57,12 @@ tasks {
         manifest(sharedManifest)
     }
 
-    named("closeRepository") {
-        mustRunAfter("publishToSonatype")
-    }
-    named("closeAndReleaseRepository") {
-        mustRunAfter("publishToSonatype")
-    }
-
     register("publishToSonatypeAndClose") {
         group = "Maven Central Release"
-        description = "Published to the Sonatype OSSRH repository and closes, but does not do the final release to Maven Central"
+        description = "Publishes to the Sonatype OSSRH repository and closes, but does not do the final release to Maven Central"
 
         dependsOn("publishToSonatype")
-        dependsOn("closeRepository")
+        dependsOn("closeSonatypeStagingRepository")
     }
 
     register("publishToSonatypeAndCloseAndReleaseToMavenCentral") {
@@ -79,7 +70,16 @@ tasks {
         description = "Publishes to the Sonatype OSSRH repository and closes, then does the final release to Maven Central"
 
         dependsOn("publishToSonatype")
-        dependsOn("closeAndReleaseRepository")
+        dependsOn("closeAndReleaseSonatypeStagingRepository")
+    }
+}
+
+afterEvaluate {
+    tasks.named("closeSonatypeStagingRepository") {
+        mustRunAfter("publishToSonatype")
+    }
+    tasks.named("closeAndReleaseSonatypeStagingRepository") {
+        mustRunAfter("publishToSonatype")
     }
 }
 
@@ -152,12 +152,6 @@ publishing {
 
 signing {
     sign(publishing.publications["maven"])
-}
-
-nexusStaging {
-    username = sonatypeUsername
-    password = sonatypePassword
-    repositoryDescription = "Release ${project.group} ${project.version}"
 }
 
 nexusPublishing {
