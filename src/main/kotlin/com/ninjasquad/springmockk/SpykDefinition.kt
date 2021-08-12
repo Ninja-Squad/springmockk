@@ -33,6 +33,13 @@ class SpykDefinition(
         if (instance.isMock) {
             return instance
         }
+
+        // Spring Boot has a special case for JDK proxies here, introduced in commit
+        // https://github.com/spring-projects/spring-boot/commit/c8c784bd5ca86faaaecdf2371aa35cf98c62efc5#
+        // But the test coming with this commit passed fine with SpringMockK, without introducing any change
+        // and the code used for proxies in Spring Boot wouldn't be usable here anyway, because it relies on a mocked
+        // class with default answers delegating to an instance, but MockK doesn't have such a thing AFAIK.
+
         return spyk<Any>(name = name, objToCopy = instance).clear(this.clear) as T
     }
 
