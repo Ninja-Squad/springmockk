@@ -9,12 +9,13 @@ import org.springframework.test.context.support.AbstractTestExecutionListener
 import org.springframework.util.ClassUtils
 
 /**
- * {@link TestExecutionListener} to reset any mock beans that have been marked with a
- * {@link MockkClear}.
+ * `TestExecutionListener` to reset any mock beans that have been marked with a
+ * [MockkClear]. Typically used alongside [MockkTestExecutionListener].
  *
  * @author Phillip Webb
  * @author JB Nizet
  * @since 1.4.0
+ * @see MockkTestExecutionListener
  */
 class ClearMocksTestExecutionListener : AbstractTestExecutionListener() {
     private val MOCKK_IS_PRESENT = ClassUtils.isPresent(

@@ -9,11 +9,16 @@ import java.lang.reflect.Field
 import kotlin.reflect.full.memberProperties
 
 /**
- * [TestExecutionListener] to trigger [MockKAnnotations#init] when [MockkBean](@MockkBean) annotations are used.
+ * `TestExecutionListener` to enable [@MockkBean][MockkBean] and [@SpykBean][SpykBean] support.
+ * Also triggers [MockKAnnotations#init] when any MockK annotations used.
+ *
+ * To use the automatic reset support of `@MockkBean` and `@SpykBean`, configure
+ * [ClearMocksTestExecutionListener] as well.
  *
  * @author Phillip Webb
  * @author Andy Wilkinson
  * @author JB Nizet
+ * @see ClearMocksTestExecutionListener
  */
 class MockkTestExecutionListener : AbstractTestExecutionListener() {
     override fun getOrder(): Int {
