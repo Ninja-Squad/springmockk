@@ -17,7 +17,7 @@ plugins {
 }
 
 group = "com.ninja-squad"
-version = "3.0.2"
+version = "3.1.0"
 description = "MockBean and SpyBean, but for MockK instead of Mockito"
 
 val sonatypeUsername = project.findProperty("sonatypeUsername")?.toString() ?: ""
@@ -92,7 +92,7 @@ dependencyManagement {
 }
 
 dependencies {
-    api("io.mockk:mockk:1.10.2")
+    api("io.mockk:mockk:1.12.1")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
