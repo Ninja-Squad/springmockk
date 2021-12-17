@@ -13,7 +13,7 @@ plugins {
     id("org.springframework.boot") version "2.4.0" apply false
     id("io.spring.dependency-management") version "1.0.10.RELEASE"
     id("org.jetbrains.dokka") version "0.10.1"
-    id("io.github.gradle-nexus.publish-plugin") version "1.0.0"
+    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 }
 
 group = "com.ninja-squad"
