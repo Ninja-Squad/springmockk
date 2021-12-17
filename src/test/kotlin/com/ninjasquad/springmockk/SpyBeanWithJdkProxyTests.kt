@@ -30,8 +30,6 @@ class SpyBeanWithJdkProxyTests {
 
     @Test
     fun jdkProxyCanBeSpied() {
-        // every { repository.find(any()) } returns Example("id")
-
         val example = service.find("id")
         assertThat(example.id).isEqualTo("id")
         verify { repository.find("id") }
@@ -45,7 +43,7 @@ class SpyBeanWithJdkProxyTests {
             return Proxy.newProxyInstance(
                 javaClass.classLoader,
                 arrayOf(ExampleRepository::class.java)
-            ) { proxy, method, args -> Example(args[0] as String) } as ExampleRepository
+            ) { _, _, args -> Example(args[0] as String) } as ExampleRepository
         }
     }
 
