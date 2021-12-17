@@ -31,12 +31,8 @@ import org.springframework.util.ClassUtils
 import org.springframework.util.ObjectUtils
 import org.springframework.util.ReflectionUtils
 import org.springframework.util.StringUtils
-import java.beans.PropertyDescriptor
 import java.lang.reflect.Field
-import java.util.HashMap
-import java.util.LinkedHashMap
-import java.util.LinkedHashSet
-import java.util.TreeSet
+import java.util.*
 
 /**
  * A [BeanFactoryPostProcessor] used to register and inject
@@ -359,10 +355,14 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
     private fun inject(field: Field, target: Any?, beanName: String) {
         try {
             field.isAccessible = true
-            check(ReflectionUtils.getField(field, target) == null) {
-                "The field $field cannot have an existing value"
-            }
+            val existingValue = ReflectionUtils.getField(field, target);
             val bean = this.beanFactory.getBean(beanName, field.type)
+            if (existingValue == bean) {
+                return;
+            }
+            check(existingValue == null) {
+                "The existing value '${existingValue}' of field '${field}' is not the same as the new value '${bean}'"
+            }
             ReflectionUtils.setField(field, target, bean)
         } catch (ex: Throwable) {
             throw BeanCreationException("Could not inject field: $field", ex)
