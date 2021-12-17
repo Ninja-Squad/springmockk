@@ -81,7 +81,7 @@ Add this to your dependencies:
 
 ## Versions compatibility
 
- - Version 3.x of SpringMockK: compatible with Spring Boot 2.4.x and 2.5.x
+ - Version 3.x of SpringMockK: compatible with Spring Boot 2.4.x, 2.5.x and 2.6.x
  - Version 2.x of SpringMockK: compatible with Spring Boot 2.2.x and 2.3.x
  - Version 1.x of SpringMockK: compatible with Spring Boot 2.1.x 
  
