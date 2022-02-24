@@ -33,6 +33,10 @@ import org.springframework.util.ReflectionUtils
 import org.springframework.util.StringUtils
 import java.lang.reflect.Field
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
+
+
+
 
 /**
  * A [BeanFactoryPostProcessor] used to register and inject
@@ -382,20 +386,35 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
         SmartInstantiationAwareBeanPostProcessor,
         PriorityOrdered {
 
+        private val earlySpyReferences: MutableMap<String, Any> = ConcurrentHashMap(16)
+
         override fun getOrder(): Int {
             return Ordered.HIGHEST_PRECEDENCE
         }
 
         @Throws(BeansException::class)
         override fun getEarlyBeanReference(bean: Any, beanName: String): Any {
-            return this.mockkPostProcessor.createSpyIfNecessary(bean, beanName)
+            return if (bean is FactoryBean<*>) {
+                bean
+            } else {
+                this.earlySpyReferences.put(getCacheKey(bean, beanName), bean)
+                this.mockkPostProcessor.createSpyIfNecessary(bean, beanName)
+            }
         }
 
         @Throws(BeansException::class)
         override fun postProcessAfterInitialization(bean: Any, beanName: String): Any {
             return if (bean is FactoryBean<*>) {
                 bean
-            } else this.mockkPostProcessor.createSpyIfNecessary(bean, beanName)
+            } else if (this.earlySpyReferences.remove(getCacheKey(bean, beanName)) != bean) {
+                this.mockkPostProcessor.createSpyIfNecessary(bean, beanName)
+            } else {
+                bean
+            }
+        }
+
+        private fun getCacheKey(bean: Any, beanName: String): String {
+            return if (StringUtils.hasLength(beanName)) beanName else bean.javaClass.name
         }
 
         companion object {
