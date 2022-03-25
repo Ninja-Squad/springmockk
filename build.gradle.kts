@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.time.Duration
 
 plugins {
-    val kotlinVersion = "1.4.10"
+    val kotlinVersion = "1.6.10"
 
     `java-library`
     kotlin("jvm") version kotlinVersion
@@ -10,14 +10,14 @@ plugins {
     signing
     id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.noarg") version kotlinVersion
-    id("org.springframework.boot") version "2.4.0" apply false
-    id("io.spring.dependency-management") version "1.0.10.RELEASE"
+    id("org.springframework.boot") version "2.6.5" apply false
+    id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("org.jetbrains.dokka") version "0.10.1"
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 }
 
 group = "com.ninja-squad"
-version = "3.1.1"
+version = "4.0.0"
 description = "MockBean and SpyBean, but for MockK instead of Mockito"
 
 val sonatypeUsername = project.findProperty("sonatypeUsername")?.toString() ?: ""
@@ -86,13 +86,13 @@ afterEvaluate {
 dependencyManagement {
     imports {
         mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES) {
-            bomProperty("kotlin.version", "1.4.10")
+            bomProperty("kotlin.version", "1.6.10")
         }
     }
 }
 
 dependencies {
-    api("io.mockk:mockk:1.12.1")
+    api("io.mockk:mockk:1.12.3")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
