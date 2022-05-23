@@ -256,10 +256,10 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
     }
 
     private fun isScopedTarget(beanName: String): Boolean {
-        try {
-            return ScopedProxyUtils.isScopedTarget(beanName)
+        return try {
+            ScopedProxyUtils.isScopedTarget(beanName)
         } catch (ex: Throwable) {
-            return false
+            false
         }
     }
 
@@ -330,7 +330,7 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
         }
     }
 
-    protected fun createSpyIfNecessary(bean: Any, beanName: String): Any {
+    private fun createSpyIfNecessary(bean: Any, beanName: String): Any {
         var spy = bean
         this.spies[beanName]?.let { spy = it.createSpy(beanName, bean) }
         return spy

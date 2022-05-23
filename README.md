@@ -42,7 +42,7 @@ class GreetingControllerTest {
 
 Add this to your dependencies:
 ```kotlin
-testImplementation("com.ninja-squad:springmockk:3.1.1")
+testImplementation("com.ninja-squad:springmockk:3.2.0")
 ```
 
 If you want to make sure Mockito (and the standard `MockBean` and `SpyBean` annotations) is not used, you can also exclude the mockito dependency:
@@ -59,7 +59,7 @@ Add this to your dependencies:
 <dependency>
   <groupId>com.ninja-squad</groupId>
   <artifactId>springmockk</artifactId>
-  <version>3.1.1</version>
+  <version>3.2.0</version>
   <scope>test</scope>
 </dependency>
 ```

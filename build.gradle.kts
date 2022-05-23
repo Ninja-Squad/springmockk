@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.time.Duration
 
 plugins {
-    val kotlinVersion = "1.6.10"
+    val kotlinVersion = "1.6.21"
 
     `java-library`
     kotlin("jvm") version kotlinVersion
@@ -10,9 +10,9 @@ plugins {
     signing
     id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.noarg") version kotlinVersion
-    id("org.springframework.boot") version "2.6.5" apply false
+    id("org.springframework.boot") version "2.7.0" apply false
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    id("org.jetbrains.dokka") version "0.10.1"
+    id("org.jetbrains.dokka") version "1.6.21"
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 }
 
@@ -24,7 +24,8 @@ val sonatypeUsername = project.findProperty("sonatypeUsername")?.toString() ?: "
 val sonatypePassword = project.findProperty("sonatypePassword")?.toString() ?: ""
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
     withJavadocJar()
     withSourcesJar()
 }
@@ -44,8 +45,8 @@ val sharedManifest = Action<Manifest> {
 tasks {
     withType(KotlinCompile::class.java) {
         kotlinOptions {
-            freeCompilerArgs = listOf("-Xjsr305=strict", "-Xjvm-default=enable")
-            jvmTarget = "1.8"
+            freeCompilerArgs = listOf("-Xjsr305=strict", "-Xjvm-default=all")
+            jvmTarget = "17"
         }
     }
 
@@ -86,15 +87,15 @@ afterEvaluate {
 dependencyManagement {
     imports {
         mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES) {
-            bomProperty("kotlin.version", "1.6.10")
+            bomProperty("kotlin.version", "1.6.21")
         }
     }
 }
 
 dependencies {
-    api("io.mockk:mockk:1.12.3")
+    api("io.mockk:mockk:1.12.4")
 
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-test")
     implementation("org.springframework:spring-test")
