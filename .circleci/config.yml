@@ -5,7 +5,7 @@ jobs:
     working_directory: ~/springmockk
 
     docker:
-      - image: circleci/openjdk:8-jdk
+      - image: circleci/openjdk:17-jdk
 
     steps:
 
