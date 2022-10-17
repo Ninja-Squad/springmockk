@@ -92,7 +92,7 @@ dependencyManagement {
 }
 
 dependencies {
-    api("io.mockk:mockk:1.12.3")
+    api("io.mockk:mockk:1.13.2")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
