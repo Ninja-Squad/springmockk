@@ -361,7 +361,7 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
             field.isAccessible = true
             val existingValue = ReflectionUtils.getField(field, target);
             val bean = this.beanFactory.getBean(beanName, field.type)
-            if (existingValue == bean) {
+            if (existingValue === bean) {
                 return;
             }
             check(existingValue == null) {
