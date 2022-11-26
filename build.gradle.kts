@@ -24,7 +24,7 @@ val sonatypeUsername = project.findProperty("sonatypeUsername")?.toString() ?: "
 val sonatypePassword = project.findProperty("sonatypePassword")?.toString() ?: ""
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_17
     withJavadocJar()
     withSourcesJar()
 }
@@ -44,13 +44,16 @@ val sharedManifest = Action<Manifest> {
 tasks {
     withType(KotlinCompile::class.java) {
         kotlinOptions {
-            freeCompilerArgs = listOf("-Xjsr305=strict", "-Xjvm-default=enable")
-            jvmTarget = "1.8"
+            freeCompilerArgs = listOf("-Xjsr305=strict", "-Xjvm-default=all")
+            jvmTarget = "17"
         }
     }
 
     test {
         useJUnitPlatform()
+        jvmArgs(
+            "--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED"
+        )
     }
 
     withType<Jar> {
@@ -92,7 +95,7 @@ dependencyManagement {
 }
 
 dependencies {
-    api("io.mockk:mockk:1.12.3")
+    api("io.mockk:mockk-jvm:1.13.3")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
