@@ -69,6 +69,42 @@ Add this to your dependencies:
  - the MockK defaults are used, which means that mocks created by the annotations are strict (i.e. not relaxed) by default. But [you can configure MockK](https://mockk.io/#settings-file) to use different defaults globally, or you can use `@MockkBean(relaxed = true)` or `@MockkBean(relaxUnitFun = true)`. 
  - the created mocks can't be serializable as they can be with Mockito (AFAIK, MockK doesn't support that feature)
 
+## Gotchas
+
+In some situations, the beans that need to be spied are JDK proxies. In recent versions of Java (Java 16+ AFAIK),
+MockK can't spy JDK proxies unless you pass the argument `--add-opens java.base/java.lang.reflect=ALL-UNNAMED`
+to the JVM running the tests.
+
+Not doing that and trying to spy on a JDK proxy will lead to an error such as
+
+```
+java.lang.IllegalAccessException: class io.mockk.impl.InternalPlatform cannot access a member of class java.lang.reflect.Proxy (in module java.base) with modifiers "protected"
+```
+
+To pass that option to the test JVM with Gradle, configure the test task with
+
+```kotlin
+tasks.test {
+    // ...
+    jvmArgs(
+        "--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED"
+    )
+}
+```
+
+For Maven users:
+
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <configuration>
+      <argLine>
+        --add-opens java.base/java.lang.reflect=ALL-UNNAMED
+      </argLine>
+    </configuration>
+</plugin>
+````
 
 ## Limitations
  - the [issue 5837](https://github.com/spring-projects/spring-boot/issues/5837), which has been fixed for Mockito spies using Mockito-specific features, also exists with MockK, and hasn't been fixed yet. 
