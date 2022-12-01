@@ -2,7 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.time.Duration
 
 plugins {
-    val kotlinVersion = "1.6.10"
+    // if it's changed, it must also be channged in the bomProperty below
+    val kotlinVersion = "1.7.21"
 
     `java-library`
     kotlin("jvm") version kotlinVersion
@@ -10,14 +11,13 @@ plugins {
     signing
     id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
     id("org.jetbrains.kotlin.plugin.noarg") version kotlinVersion
-    id("org.springframework.boot") version "2.6.5" apply false
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    id("org.jetbrains.dokka") version "0.10.1"
+    id("org.springframework.boot") version "3.0.0" apply false
+    id("io.spring.dependency-management") version "1.1.0"
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 }
 
 group = "com.ninja-squad"
-version = "3.1.2"
+version = "4.0.0"
 description = "MockBean and SpyBean, but for MockK instead of Mockito"
 
 val sonatypeUsername = project.findProperty("sonatypeUsername")?.toString() ?: ""
@@ -89,7 +89,7 @@ afterEvaluate {
 dependencyManagement {
     imports {
         mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES) {
-            bomProperty("kotlin.version", "1.6.10")
+            bomProperty("kotlin.version", "1.7.21")
         }
     }
 }
@@ -97,7 +97,6 @@ dependencyManagement {
 dependencies {
     api("io.mockk:mockk-jvm:1.13.3")
 
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-test")
     implementation("org.springframework:spring-test")
