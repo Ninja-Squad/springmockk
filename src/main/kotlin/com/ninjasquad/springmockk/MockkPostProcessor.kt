@@ -281,7 +281,9 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
     ) {
         try {
             val beanName = determineBeanName(existingBeans, spykDefinition, registry)
-            registerSpy(spykDefinition, field, beanName!!)
+            beanName?.let {
+                registerSpy(spykDefinition, field, it)
+            }
         } catch (ex: RuntimeException) {
             throw IllegalStateException("Unable to register spy bean ${spykDefinition.typeToSpy}", ex)
         }
