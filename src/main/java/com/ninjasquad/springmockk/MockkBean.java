@@ -72,7 +72,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @author JB Nizet
  * @see MockkPostProcessor
  */
-@Target({ElementType.TYPE, ElementType.FIELD })
+@Target({ElementType.TYPE, ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Repeatable(MockkBeans.class)

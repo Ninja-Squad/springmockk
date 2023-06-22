@@ -8,6 +8,7 @@ import org.springframework.util.ReflectionUtils
 import org.springframework.util.StringUtils
 import java.lang.reflect.AnnotatedElement
 import java.lang.reflect.Field
+import java.lang.reflect.Parameter
 import java.lang.reflect.TypeVariable
 import java.util.Collections
 import kotlin.reflect.KClass
@@ -34,6 +35,7 @@ class DefinitionsParser(existing: Collection<Definition> = emptySet()) {
         get() = Collections.unmodifiableSet(definitions)
 
     fun parse(source: Class<*>) {
+        source.constructors.flatMap { listOf(*it.parameters) }.forEach { parseElement(it, source) }
         parseElement(source, null)
         ReflectionUtils.doWithFields(source) { element -> this.parseElement(element, source) }
     }
@@ -65,7 +67,7 @@ class DefinitionsParser(existing: Collection<Definition> = emptySet()) {
                 clear = annotation.clear,
                 relaxed = annotation.relaxed,
                 relaxUnitFun = annotation.relaxUnitFun,
-                qualifier = QualifierDefinition.forElement(element)
+                qualifier = QualifierDefinition.forElement(element, source)
             )
             addDefinition(element, definition, "mock")
         }
@@ -87,7 +89,7 @@ class DefinitionsParser(existing: Collection<Definition> = emptySet()) {
                 name = if (annotation.name.isEmpty()) null else annotation.name,
                 typeToSpy = typeToSpy,
                 clear = annotation.clear,
-                qualifier = QualifierDefinition.forElement(element)
+                qualifier = QualifierDefinition.forElement(element, source)
             )
             addDefinition(element, definition, "spy")
         }
@@ -123,6 +125,9 @@ class DefinitionsParser(existing: Collection<Definition> = emptySet()) {
             } else {
                 ResolvableType.forField(field)
             })
+        }
+        if (element is Parameter) {
+            types.add(ResolvableType.forType(element.parameterizedType))
         }
         return types
     }

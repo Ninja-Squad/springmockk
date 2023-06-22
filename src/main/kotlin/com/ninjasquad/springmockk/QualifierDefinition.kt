@@ -6,7 +6,7 @@ import org.springframework.beans.factory.support.RootBeanDefinition
 import org.springframework.core.annotation.MergedAnnotations
 import java.lang.reflect.AnnotatedElement
 import java.lang.reflect.Field
-import java.util.HashSet
+import java.lang.reflect.Parameter
 
 
 /**
@@ -49,35 +49,32 @@ class QualifierDefinition(private val field: Field, private val annotations: Set
     }
 
     companion object {
-        fun forElement(element: AnnotatedElement): QualifierDefinition? {
-            if (element is Field) {
-                val annotations = getQualifierAnnotations(element)
-                if (!annotations.isEmpty()) {
-                    return QualifierDefinition(element, annotations)
-                }
-            }
-            return null
-        }
+        fun forElement(
+            element: AnnotatedElement,
+            source: Class<*>? = null,
+        ): QualifierDefinition? {
+            val qualifiers = element.declaredAnnotations
+                // Assume that any annotations other than @MockkBean/@SpykBean are qualifiers
+                .filterNot { isMockOrSpyAnnotation(it.annotationClass.java) }
+                .toSet()
+                .takeUnless { it.isEmpty() }
+                ?: return null
 
-        private fun getQualifierAnnotations(field: Field): Set<Annotation> {
-            // Assume that any annotations other than @MockkBean/@SpykBean are qualifiers
-            val candidates = field.declaredAnnotations
-            val annotations = HashSet<Annotation>(candidates.size)
-            for (candidate in candidates) {
-                if (!isMockOrSpyAnnotation(candidate.annotationClass.java)) {
-                    annotations.add(candidate)
-                }
+            return when (element) {
+                is Field -> QualifierDefinition(element, qualifiers)
+                is Parameter -> source?.declaredFields
+                    ?.singleOrNull { it.type == element.type }
+                    ?.let { QualifierDefinition(it, qualifiers) }
+                else -> null
             }
-            return annotations
         }
 
         private fun isMockOrSpyAnnotation(type: Class<out Annotation>): Boolean {
-            if (type.equals(MockkBean::class.java) || type.equals(SpykBean::class.java)) {
-                return true
-            }
+            val annotations = setOf(MockkBean::class.java, SpykBean::class.java)
+            if (type in annotations) return true
+
             val metaAnnotations = MergedAnnotations.from(type)
-            return (metaAnnotations.isPresent(MockkBean::class.java)
-                || metaAnnotations.isPresent(SpykBean::class.java))
+            return annotations.any { metaAnnotations.isPresent(it) }
         }
     }
 }

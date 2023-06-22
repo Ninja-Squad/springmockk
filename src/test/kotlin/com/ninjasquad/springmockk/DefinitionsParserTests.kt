@@ -66,7 +66,41 @@ class DefinitionsParserTests {
         val qualifier = QualifierDefinition.forElement(
             ReflectionUtils.findField(MockBeanOnClassAndField::class.java, "caller")!!
         )
-        assertThat(fieldDefinition.qualifier).isNotNull().isEqualTo(qualifier)
+        assertThat(fieldDefinition.qualifier).isNotNull.isEqualTo(qualifier)
+    }
+
+    @Test
+    fun parseMockBeanOnConstructorParameter() {
+        this.parser.parse(MockBeanInConstructor::class.java)
+        assertThat(definitions).hasSize(2)
+
+        val firstParameter = getMockDefinition(0)
+        assertThat(firstParameter.typeToMock.resolve()).isEqualTo(ExampleService::class.java)
+        assertThat(firstParameter.qualifier).isNull()
+
+        val secondParameter = getMockDefinition(1)
+        assertThat(secondParameter.typeToMock.resolve()).isEqualTo(ExampleServiceCaller::class.java)
+        val qualifier = QualifierDefinition.forElement(
+            ReflectionUtils.findField(MockBeanOnClassAndField::class.java, "caller")!!
+        )
+        assertThat(secondParameter.qualifier).isNotNull().isEqualTo(qualifier)
+    }
+
+    @Test
+    fun parseMockBeanOnConstructorParameterViaField() {
+        this.parser.parse(MockBeanInConstructorViaField::class.java)
+        assertThat(definitions).hasSize(2)
+
+        val firstParameter = getMockDefinition(0)
+        assertThat(firstParameter.typeToMock.resolve()).isEqualTo(ExampleService::class.java)
+        assertThat(firstParameter.qualifier).isNull()
+
+        val secondParameter = getMockDefinition(1)
+        assertThat(secondParameter.typeToMock.resolve()).isEqualTo(ExampleServiceCaller::class.java)
+        val qualifier = QualifierDefinition.forElement(
+            ReflectionUtils.findField(MockBeanOnClassAndField::class.java, "caller")!!
+        )
+        assertThat(secondParameter.qualifier).isNotNull().isEqualTo(qualifier)
     }
 
     @Test
@@ -206,6 +240,16 @@ class DefinitionsParserTests {
         private val caller: Any? = null
 
     }
+
+    internal class MockBeanInConstructor(
+        @MockkBean private val exampleService: ExampleService,
+        @MockkBean @Qualifier("test") val caller: ExampleServiceCaller,
+    )
+
+    internal class MockBeanInConstructorViaField(
+        @field:MockkBean private val exampleService: ExampleService,
+        @field:MockkBean @field:Qualifier("test") val caller: ExampleServiceCaller,
+    )
 
     @MockkBean(ExampleService::class, ExampleServiceCaller::class)
     internal class MockBeanMultipleClasses
