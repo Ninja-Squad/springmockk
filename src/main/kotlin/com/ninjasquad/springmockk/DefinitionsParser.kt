@@ -55,13 +55,13 @@ class DefinitionsParser(existing: Collection<Definition> = emptySet()) {
 
     private fun parseMockkBeanAnnotation(annotation: MockkBean, element: AnnotatedElement, source: Class<*>?) {
         val typesToMock = getOrDeduceTypes(element, annotation.value, source)
-        check(!typesToMock.isEmpty()) { "Unable to deduce type to mock from $element" }
+        check(typesToMock.isNotEmpty()) { "Unable to deduce type to mock from $element" }
         if (StringUtils.hasLength(annotation.name)) {
             check(typesToMock.size == 1) { "The name attribute can only be used when mocking a single class" }
         }
         for (typeToMock in typesToMock) {
             val definition = MockkDefinition(
-                name = if (annotation.name.isEmpty()) null else annotation.name,
+                name = annotation.name.ifEmpty { null },
                 typeToMock = typeToMock,
                 extraInterfaces = annotation.extraInterfaces,
                 clear = annotation.clear,
@@ -75,9 +75,7 @@ class DefinitionsParser(existing: Collection<Definition> = emptySet()) {
 
     private fun parseSpykBeanAnnotation(annotation: SpykBean, element: AnnotatedElement, source: Class<*>?) {
         val typesToSpy = getOrDeduceTypes(element, annotation.value, source)
-        Assert.state(
-            !typesToSpy.isEmpty()
-        ) { "Unable to deduce type to spy from $element" }
+        Assert.state(typesToSpy.isNotEmpty()) { "Unable to deduce type to spy from $element" }
         if (StringUtils.hasLength(annotation.name)) {
             Assert.state(
                 typesToSpy.size == 1,
@@ -86,7 +84,7 @@ class DefinitionsParser(existing: Collection<Definition> = emptySet()) {
         }
         for (typeToSpy in typesToSpy) {
             val definition = SpykDefinition(
-                name = if (annotation.name.isEmpty()) null else annotation.name,
+                name = annotation.name.ifEmpty { null },
                 typeToSpy = typeToSpy,
                 clear = annotation.clear,
                 qualifier = QualifierDefinition.forElement(element, source)
@@ -119,11 +117,10 @@ class DefinitionsParser(existing: Collection<Definition> = emptySet()) {
             types.add(ResolvableType.forClass(clazz.java))
         }
         if (types.isEmpty() && element is Field) {
-            val field = element
-            types.add(if (field.genericType is TypeVariable<*>) {
-                ResolvableType.forField(field, source!!)
+            types.add(if (element.genericType is TypeVariable<*>) {
+                ResolvableType.forField(element, source!!)
             } else {
-                ResolvableType.forField(field)
+                ResolvableType.forField(element)
             })
         }
         if (element is Parameter) {

@@ -19,11 +19,7 @@ import java.lang.reflect.Parameter
  */
 class QualifierDefinition(private val field: Field, private val annotations: Set<Annotation>) {
 
-    private val descriptor: DependencyDescriptor
-
-    init {
-        this.descriptor = DependencyDescriptor(field, true)
-    }
+    private val descriptor = DependencyDescriptor(field, true)
 
     fun matches(beanFactory: ConfigurableListableBeanFactory, beanName: String): Boolean {
         return beanFactory.isAutowireCandidate(beanName, this.descriptor)
