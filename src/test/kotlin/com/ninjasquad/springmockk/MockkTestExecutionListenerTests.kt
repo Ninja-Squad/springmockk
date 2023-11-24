@@ -41,7 +41,7 @@ class MockkTestExecutionListenerTests {
 
     @Test
     fun prepareTestInstanceShouldInjectMockBean() {
-        every { applicationContext.getBean<MockkPostProcessor>() } returns this.postProcessor
+        every { applicationContext.getBean(MockkPostProcessor::class.java) } returns this.postProcessor
         val instance = WithMockkBean()
         val testContext = mockTestContext(instance)
         every { testContext.getApplicationContext() } returns this.applicationContext;
