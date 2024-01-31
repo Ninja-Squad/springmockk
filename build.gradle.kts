@@ -95,7 +95,7 @@ dependencyManagement {
 }
 
 dependencies {
-    api("io.mockk:mockk-jvm:1.13.3")
+    api("io.mockk:mockk-jvm:1.13.9")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-test")
