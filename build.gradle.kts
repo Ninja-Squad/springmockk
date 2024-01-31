@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.time.Duration
 
 plugins {
-    // if it's changed, it must also be channged in the bomProperty below
+    // if it's changed, it must also be changed in the bomProperty below
     val kotlinVersion = "1.7.21"
 
     `java-library`
@@ -17,7 +17,7 @@ plugins {
 }
 
 group = "com.ninja-squad"
-version = "4.0.2"
+version = "4.0.3"
 description = "MockBean and SpyBean, but for MockK instead of Mockito"
 
 val sonatypeUsername = project.findProperty("sonatypeUsername")?.toString() ?: ""
@@ -95,7 +95,7 @@ dependencyManagement {
 }
 
 dependencies {
-    api("io.mockk:mockk-jvm:1.13.3")
+    api("io.mockk:mockk-jvm:1.13.9")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-test")

@@ -42,7 +42,7 @@ class GreetingControllerTest {
 
 Add this to your dependencies:
 ```kotlin
-testImplementation("com.ninja-squad:springmockk:4.0.2")
+testImplementation("com.ninja-squad:springmockk:4.0.3")
 ```
 
 If you want to make sure Mockito (and the standard `MockBean` and `SpyBean` annotations) is not used, you can also exclude the mockito dependency:
@@ -59,7 +59,7 @@ Add this to your dependencies:
 <dependency>
   <groupId>com.ninja-squad</groupId>
   <artifactId>springmockk</artifactId>
-  <version>4.0.2</version>
+  <version>4.0.3</version>
   <scope>test</scope>
 </dependency>
 ```
@@ -107,10 +107,12 @@ For Maven users:
 ````
 
 ## Limitations
+
  - the [issue 5837](https://github.com/spring-projects/spring-boot/issues/5837), which has been fixed for Mockito spies using Mockito-specific features, also exists with MockK, and hasn't been fixed yet. 
    If you have a good idea, please tell!
- - [this is not an official Spring Boot project](https://github.com/spring-projects/spring-boot/issues/15749), so it might not work out of the box for newest versions if backwards incompatible changes are introduced in Spring Boot. 
- Please file issues if you find problems.
+ - [this is not an official Spring Boot project](https://github.com/spring-projects/spring-boot/issues/15749),
+   so it might not work out of the box for newest versions if backwards incompatible changes are introduced in Spring Boot. 
+   Please file issues if you find problems.
  - annotations are looked up on fields, and not on properties (for now). 
    This doesn't matter much until you use a custom qualifier annotation.
    In that case, make sure that it targets fields and not properties, or use `@field:YourQualifier` to apply it on your beans.
