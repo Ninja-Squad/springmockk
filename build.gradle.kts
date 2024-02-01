@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.time.Duration
 
 plugins {
-    // if it's changed, it must also be channged in the bomProperty below
+    // if it's changed, it must also be changed in the bomProperty below
     val kotlinVersion = "1.9.22"
 
     `java-library`

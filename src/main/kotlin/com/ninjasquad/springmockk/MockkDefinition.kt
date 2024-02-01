@@ -6,7 +6,7 @@ import org.springframework.core.style.ToStringCreator
 import java.util.*
 import kotlin.reflect.KClass
 
-private const val MULTIPLER = 31
+private const val MULTIPLIER = 31
 
 /**
  * A complete definition that can be used to create a MockK mock.
@@ -65,10 +65,10 @@ class MockkDefinition(
 
     override fun hashCode(): Int {
         var result = super.hashCode()
-        result = MULTIPLER * result + typeToMock.hashCode()
-        result = MULTIPLER * result + extraInterfaces.hashCode()
-        result = MULTIPLER * result + relaxed.hashCode()
-        result = MULTIPLER * result + relaxUnitFun.hashCode()
+        result = MULTIPLIER * result + typeToMock.hashCode()
+        result = MULTIPLIER * result + extraInterfaces.hashCode()
+        result = MULTIPLIER * result + relaxed.hashCode()
+        result = MULTIPLIER * result + relaxUnitFun.hashCode()
         return result
     }
 }
