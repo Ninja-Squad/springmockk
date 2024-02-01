@@ -68,7 +68,7 @@ class MockBeanWithAopProxyTests {
     @Service
     internal class DateService {
 
-        @Cacheable(cacheNames = arrayOf("test"))
+        @Cacheable(cacheNames = ["test"])
         fun getDate(argument: Boolean): Long {
             return System.nanoTime()
         }

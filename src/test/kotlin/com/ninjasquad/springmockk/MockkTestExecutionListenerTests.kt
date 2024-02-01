@@ -68,7 +68,7 @@ class MockkTestExecutionListenerTests {
         every { applicationContext.getBean(MockkPostProcessor::class.java) } returns postProcessor
         val instance = WithMockkBean()
         val mockTestContext = mockTestContext(instance)
-        every { mockTestContext.getApplicationContext() } returns this.applicationContext;
+        every { mockTestContext.applicationContext } returns this.applicationContext;
         every {
             mockTestContext.getAttribute(DependencyInjectionTestExecutionListener.REINJECT_DEPENDENCIES_ATTRIBUTE)
         } returns true
@@ -84,9 +84,9 @@ class MockkTestExecutionListenerTests {
 
     private fun mockTestContext(instance: Any): TestContext {
         val testContext = mockk<TestContext>(relaxed = true)
-        every { testContext.getTestInstance() } returns instance
-        every { testContext.getTestClass() } returns instance.javaClass as Class<*>
-        every { testContext.getApplicationContext() } returns this.applicationContext
+        every { testContext.testInstance } returns instance
+        every { testContext.testClass } returns instance.javaClass as Class<*>
+        every { testContext.applicationContext } returns this.applicationContext
         return testContext
     }
 

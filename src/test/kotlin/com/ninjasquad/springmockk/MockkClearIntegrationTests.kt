@@ -20,7 +20,7 @@ class MockkClearIntegrationTests {
 
     /**
      * Test case for Issue #27. It fails if MockkClear uses a HashMap or a ConcurrentHashMap
-     * @see https://github.com/Ninja-Squad/springmockk/issues/27
+     * @see [27](https://github.com/Ninja-Squad/springmockk/issues/27)
      */
     @Test
     fun test() {

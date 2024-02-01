@@ -100,7 +100,6 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-test")
     implementation("org.springframework:spring-test")
-    implementation("org.springframework:spring-context")
 
     testImplementation("org.assertj:assertj-core")
     testImplementation("org.junit.jupiter:junit-jupiter-api")

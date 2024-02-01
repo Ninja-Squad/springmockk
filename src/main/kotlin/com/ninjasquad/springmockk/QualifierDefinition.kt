@@ -52,7 +52,7 @@ class QualifierDefinition(private val field: Field, private val annotations: Set
         fun forElement(element: AnnotatedElement): QualifierDefinition? {
             if (element is Field) {
                 val annotations = getQualifierAnnotations(element)
-                if (!annotations.isEmpty()) {
+                if (annotations.isNotEmpty()) {
                     return QualifierDefinition(element, annotations)
                 }
             }
@@ -72,7 +72,7 @@ class QualifierDefinition(private val field: Field, private val annotations: Set
         }
 
         private fun isMockOrSpyAnnotation(type: Class<out Annotation>): Boolean {
-            if (type.equals(MockkBean::class.java) || type.equals(SpykBean::class.java)) {
+            if (type == MockkBean::class.java || type == SpykBean::class.java) {
                 return true
             }
             val metaAnnotations = MergedAnnotations.from(type)

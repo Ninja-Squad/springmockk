@@ -40,8 +40,8 @@ import java.util.concurrent.ConcurrentHashMap
 
 /**
  * A [BeanFactoryPostProcessor] used to register and inject
- * [MockkBean](@MockkBeans} with the [ApplicationContext]. An initial set of
- * definitions can be passed to the processor with additional definitions being
+ * [MockkBeans](@MockkBeans) with the [ApplicationContext][org.springframework.context.ApplicationContext].
+ * An initial set of definitions can be passed to the processor with additional definitions being
  * automatically created from `@Configuration` classes that use
  * [MockkBean](@MockBean).
  *
@@ -193,7 +193,7 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
         }
         val existingBeans = getExistingBeans(beanFactory, mockkDefinition.typeToMock, mockkDefinition.qualifier)
         if (existingBeans.isEmpty()) {
-            return MockkPostProcessor.beanNameGenerator.generateBeanName(beanDefinition, registry)
+            return beanNameGenerator.generateBeanName(beanDefinition, registry)
         }
         if (existingBeans.size == 1) {
             return existingBeans.iterator().next()
@@ -256,10 +256,10 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
     }
 
     private fun isScopedTarget(beanName: String): Boolean {
-        try {
-            return ScopedProxyUtils.isScopedTarget(beanName)
+        return try {
+            ScopedProxyUtils.isScopedTarget(beanName)
         } catch (ex: Throwable) {
-            return false
+            false
         }
     }
 
@@ -268,7 +268,7 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
         field: Field?
     ) {
         val beanDefinition = RootBeanDefinition(spykDefinition.typeToSpy.resolve())
-        val beanName = MockkPostProcessor.beanNameGenerator.generateBeanName(beanDefinition, registry)
+        val beanName = beanNameGenerator.generateBeanName(beanDefinition, registry)
         registry.registerBeanDefinition(beanName, beanDefinition)
         registerSpy(spykDefinition, field, beanName)
     }
@@ -332,7 +332,7 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
         }
     }
 
-    protected fun createSpyIfNecessary(bean: Any, beanName: String): Any {
+    private fun createSpyIfNecessary(bean: Any, beanName: String): Any {
         var spy = bean
         this.spies[beanName]?.let { spy = it.createSpy(beanName, bean) }
         return spy
@@ -399,7 +399,7 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
             return if (bean is FactoryBean<*>) {
                 bean
             } else {
-                this.earlySpyReferences.put(getCacheKey(bean, beanName), bean)
+                this.earlySpyReferences[getCacheKey(bean, beanName)] = bean
                 this.mockkPostProcessor.createSpyIfNecessary(bean, beanName)
             }
         }
