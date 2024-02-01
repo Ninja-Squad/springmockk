@@ -35,13 +35,8 @@ class SpyBeanWithAopProxyTests {
      * This test currently fails, because the issue [5837](https://github.com/spring-projects/spring-boot/issues/5837)
      * also exists for MockK. Unfortunately, I have no clear idea of how to fix it.
      */
+    @Disabled("This test currently fails. Please refer to the KDoc.")
     @Test
-    @Disabled(
-        """
-            This test currently fails, because the issue [5837](https://github.com/spring-projects/spring-boot/issues/5837)
-            also exists for MockK. Unfortunately, I have no clear idea of how to fix it.
-        """
-    )
     fun verifyShouldUseProxyTarget() {
         val d1 = this.dateService.getDate(false)
         Thread.sleep(200)

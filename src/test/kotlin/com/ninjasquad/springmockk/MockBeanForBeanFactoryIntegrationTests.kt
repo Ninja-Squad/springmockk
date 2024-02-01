@@ -37,7 +37,7 @@ class MockBeanForBeanFactoryIntegrationTests {
         val testBean = mockk<TestBean>()
         every { testBean.hello() } returns "amock"
 
-        every { testFactoryBean.getObjectType() } returns TestBean::class.java as Class<*>
+        every { testFactoryBean.objectType } returns TestBean::class.java as Class<*>
         every { testFactoryBean.getObject() } returns testBean
 
         val bean = this.applicationContext.getBean<TestBean>()

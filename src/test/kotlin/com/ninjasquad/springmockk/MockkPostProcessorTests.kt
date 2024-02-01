@@ -6,8 +6,6 @@ import com.ninjasquad.springmockk.example.RealExampleService
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatIllegalStateException
 import org.junit.jupiter.api.Test
-import org.springframework.beans.BeanWrapper
-import org.springframework.beans.BeansException
 import org.springframework.beans.factory.FactoryBean
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor
@@ -67,7 +65,7 @@ class MockkPostProcessorTests {
         val factoryBeanDefinition = RootBeanDefinition(TestFactoryBean::class.java)
         factoryBeanDefinition.setAttribute(
             FactoryBean.OBJECT_TYPE_ATTRIBUTE,
-            SomeInterface::class.java.name
+            SomeInterface::class.java
         )
         context.registerBeanDefinition("beanToBeMocked", factoryBeanDefinition)
         context.register(MockedFactoryBean::class.java)

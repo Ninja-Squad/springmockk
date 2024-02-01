@@ -244,7 +244,7 @@ class DefinitionsParserTests {
     @SpykBean(RealExampleService::class, ExampleServiceCaller::class)
     internal class SpyBeanMultipleClasses
 
-    @SpykBean(name = "name", classes = arrayOf(RealExampleService::class, ExampleServiceCaller::class))
+    @SpykBean(name = "name", classes = [RealExampleService::class, ExampleServiceCaller::class])
     internal class SpyBeanMultipleClassesWithName
 
     internal class SpyBeanInferClassToMock {

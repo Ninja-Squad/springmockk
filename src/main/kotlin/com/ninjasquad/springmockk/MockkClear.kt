@@ -1,7 +1,6 @@
 package com.ninjasquad.springmockk
 
 import java.lang.ref.WeakReference
-import java.util.IdentityHashMap
 
 /**
  * Clear strategy used on a mockk bean, applied to a mock via the
@@ -45,9 +44,9 @@ enum class MockkClear {
         internal fun set(mock: Any, clear: MockkClear) {
             require(mock.isMock) { "Only mocks can be cleared" }
             // Using === is important here to not call equals() on the mock.
-            val entry = entries.firstOrNull { it.mockRef.refersTo(mock) }?.apply { clearMode = clear }
+            val entry = this.entries.firstOrNull { it.mockRef.refersTo(mock) }?.apply { clearMode = clear }
             if (entry == null) {
-                entries.add(MockkClearEntry(WeakReference(mock), clear))
+                this.entries.add(MockkClearEntry(WeakReference(mock), clear))
             }
         }
 
@@ -57,7 +56,7 @@ enum class MockkClear {
          * @return the clear type
          */
         fun get(mock: Any): MockkClear {
-            return entries.firstOrNull { it.mockRef.refersTo(mock) }?.clearMode ?: NONE
+            return this.entries.firstOrNull { it.mockRef.refersTo(mock) }?.clearMode ?: NONE
         }
     }
 }

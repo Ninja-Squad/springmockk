@@ -81,7 +81,7 @@ class MockkTestExecutionListener : AbstractTestExecutionListener() {
     ) {
         val parser = DefinitionsParser()
         parser.parse(testContext.testClass)
-        if (!parser.parsedDefinitions.isEmpty()) {
+        if (parser.parsedDefinitions.isNotEmpty()) {
             val postProcessor = testContext.applicationContext.getBean(MockkPostProcessor::class.java)
             for (definition in parser.parsedDefinitions) {
                 val field = parser.getField(definition)
