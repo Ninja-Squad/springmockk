@@ -5,7 +5,6 @@ import io.mockk.impl.annotations.MockK
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.getBean
 import org.springframework.context.ApplicationContext
 import org.springframework.test.context.TestContext
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener
@@ -41,10 +40,9 @@ class MockkTestExecutionListenerTests {
 
     @Test
     fun prepareTestInstanceShouldInjectMockBean() {
-        every { applicationContext.getBean<MockkPostProcessor>() } returns this.postProcessor
+        every { applicationContext.getBean(MockkPostProcessor::class.java) } returns this.postProcessor
         val instance = WithMockkBean()
         val testContext = mockTestContext(instance)
-        every { testContext.getApplicationContext() } returns this.applicationContext;
         this.listener.prepareTestInstance(testContext)
         verify {
             postProcessor.inject(

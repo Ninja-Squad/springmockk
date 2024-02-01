@@ -3,16 +3,16 @@ import java.time.Duration
 
 plugins {
     // if it's changed, it must also be channged in the bomProperty below
-    val kotlinVersion = "1.7.21"
+    val kotlinVersion = "1.9.22"
 
     `java-library`
     kotlin("jvm") version kotlinVersion
+    kotlin("plugin.spring") version kotlinVersion
+    kotlin("plugin.noarg") version kotlinVersion
     `maven-publish`
     signing
-    id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
-    id("org.jetbrains.kotlin.plugin.noarg") version kotlinVersion
-    id("org.springframework.boot") version "3.0.0" apply false
-    id("io.spring.dependency-management") version "1.1.0"
+    id("org.springframework.boot") version "3.2.2" apply false
+    id("io.spring.dependency-management") version "1.1.4"
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 }
 
@@ -89,7 +89,7 @@ afterEvaluate {
 dependencyManagement {
     imports {
         mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES) {
-            bomProperty("kotlin.version", "1.7.21")
+            bomProperty("kotlin.version", "1.9.22")
         }
     }
 }
@@ -147,7 +147,7 @@ publishing {
     repositories {
         maven {
             name = "build"
-            url = uri("$buildDir/repo")
+            url = uri("${layout.buildDirectory}/repo")
         }
     }
 }
