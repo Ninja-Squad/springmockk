@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.time.Duration
 
 plugins {
-    // if it's changed, it must also be channged in the bomProperty below
+    // if it's changed, it must also be changed in the bomProperty below
     val kotlinVersion = "1.7.21"
 
     `java-library`
@@ -16,7 +16,7 @@ plugins {
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
 }
 
-group = "com.ninja-squad"
+group = "io.mockk"
 version = "4.0.2"
 description = "MockBean and SpyBean, but for MockK instead of Mockito"
 
@@ -117,10 +117,10 @@ publishing {
             pom {
                 name.set(project.name)
                 description.set(project.description)
-                url.set("https://github.com/Ninja-Squad/springmockk")
+                url.set("https://github.com/mockk/springmockk")
                 organization {
-                    name.set("Ninja Squad")
-                    url.set("http://ninja-squad.com")
+                    name.set("mockk")
+                    url.set("https://github.com/mockk")
                 }
                 licenses {
                     license {
@@ -137,9 +137,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection.set("scm:git:git://github.com/Ninja-Squad/springmockk")
-                    developerConnection.set("scm:git:git://github.com/Ninja-Squad/springmockk")
-                    url.set("https://github.com/Ninja-Squad/springmockk")
+                    connection.set("scm:git:git://github.com/mockk/springmockk")
+                    developerConnection.set("scm:git:git://github.com/mockk/springmockk")
+                    url.set("https://github.com/mockk/springmockk")
                 }
             }
         }
