@@ -1,7 +1,5 @@
 # SpringMockK
 
-[![CircleCI](https://circleci.com/gh/Ninja-Squad/springmockk.svg?style=svg)](https://circleci.com/gh/Ninja-Squad/springmockk)
-
 Support for Spring Boot integration tests written in Kotlin using [MockK](https://mockk.io/) instead of Mockito.
  
 Spring Boot provides `@MockBean` and `@SpyBean` annotations for integration tests, which create mock/spy beans using Mockito.
@@ -42,7 +40,7 @@ class GreetingControllerTest {
 
 Add this to your dependencies:
 ```kotlin
-testImplementation("com.ninja-squad:springmockk:4.0.2")
+testImplementation("io.mockk:springmockk:4.0.2")
 ```
 
 If you want to make sure Mockito (and the standard `MockBean` and `SpyBean` annotations) is not used, you can also exclude the mockito dependency:
@@ -57,7 +55,7 @@ testImplementation("org.springframework.boot:spring-boot-starter-test") {
 Add this to your dependencies:
 ```xml
 <dependency>
-  <groupId>com.ninja-squad</groupId>
+    <groupId>io.mockk</groupId>
   <artifactId>springmockk</artifactId>
   <version>4.0.2</version>
   <scope>test</scope>
