@@ -193,7 +193,7 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
         }
         val existingBeans = getExistingBeans(beanFactory, mockkDefinition.typeToMock, mockkDefinition.qualifier)
         if (existingBeans.isEmpty()) {
-            return MockkPostProcessor.beanNameGenerator.generateBeanName(beanDefinition, registry)
+            return beanNameGenerator.generateBeanName(beanDefinition, registry)
         }
         if (existingBeans.size == 1) {
             return existingBeans.iterator().next()
@@ -268,7 +268,7 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
         field: Field?
     ) {
         val beanDefinition = RootBeanDefinition(spykDefinition.typeToSpy.resolve())
-        val beanName = MockkPostProcessor.beanNameGenerator.generateBeanName(beanDefinition, registry)
+        val beanName = beanNameGenerator.generateBeanName(beanDefinition, registry)
         registry.registerBeanDefinition(beanName, beanDefinition)
         registerSpy(spykDefinition, field, beanName)
     }
@@ -361,10 +361,10 @@ class MockkPostProcessor(private val definitions: Set<Definition>) : Instantiati
     private fun inject(field: Field, target: Any?, beanName: String) {
         try {
             field.isAccessible = true
-            val existingValue = ReflectionUtils.getField(field, target);
+            val existingValue = ReflectionUtils.getField(field, target)
             val bean = this.beanFactory.getBean(beanName, field.type)
             if (existingValue === bean) {
-                return;
+                return
             }
             check(existingValue == null) {
                 "The existing value '${existingValue}' of field '${field}' is not the same as the new value '${bean}'"

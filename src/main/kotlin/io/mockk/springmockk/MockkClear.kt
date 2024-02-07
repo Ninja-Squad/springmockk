@@ -1,7 +1,6 @@
 package io.mockk.springmockk
 
 import java.lang.ref.WeakReference
-import java.util.IdentityHashMap
 
 /**
  * Clear strategy used on a mockk bean, applied to a mock via the

@@ -1,15 +1,15 @@
 package io.mockk.springmockk;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.annotation.AliasFor;
+import org.springframework.test.context.junit4.SpringRunner;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.annotation.AliasFor;
-import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Annotation that can be used to apply MockK spies to a Spring
@@ -71,45 +71,49 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @author JB Nizet
  * @see MockkPostProcessor
  */
-@Target({ ElementType.TYPE, ElementType.FIELD })
+@Target({ElementType.TYPE, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Repeatable(SpykBeans.class)
 public @interface SpykBean {
 
-	/**
-	 * The name of the bean to spy. If not specified the name will either be generated or,
-	 * if the spy is for an existing bean, the existing name will be used.
-	 * @return the name of the bean
-	 */
-	String name() default "";
+    /**
+     * The name of the bean to spy. If not specified the name will either be generated or,
+     * if the spy is for an existing bean, the existing name will be used.
+     *
+     * @return the name of the bean
+     */
+    String name() default "";
 
-	/**
-	 * The classes to spy. This is an alias of {@link #classes()} which can be used for
-	 * brevity if no other attributes are defined. See {@link #classes()} for details.
-	 * @return the classes to spy
-	 */
-	@AliasFor("classes")
-	Class<?>[] value() default {};
+    /**
+     * The classes to spy. This is an alias of {@link #classes()} which can be used for
+     * brevity if no other attributes are defined. See {@link #classes()} for details.
+     *
+     * @return the classes to spy
+     */
+    @AliasFor("classes")
+    Class<?>[] value() default {};
 
-	/**
-	 * The classes to spy. Each class specified here will result in a spy being applied.
-	 * Classes can be omitted when the annotation is used on a field.
-	 * <p>
-	 * When {@code @SpykBean} also defines a {@code name} this attribute can only contain a
-	 * single value.
-	 * <p>
-	 * If this is the only specified attribute consider using the {@code value} alias
-	 * instead.
-	 * @return the classes to spy
-	 */
-	@AliasFor("value")
-	Class<?>[] classes() default {};
+    /**
+     * The classes to spy. Each class specified here will result in a spy being applied.
+     * Classes can be omitted when the annotation is used on a field.
+     * <p>
+     * When {@code @SpykBean} also defines a {@code name} this attribute can only contain a
+     * single value.
+     * <p>
+     * If this is the only specified attribute consider using the {@code value} alias
+     * instead.
+     *
+     * @return the classes to spy
+     */
+    @AliasFor("value")
+    Class<?>[] classes() default {};
 
-	/**
-	 * The reset mode to apply to the spied bean. The default is {@link MockkClear#AFTER}
-	 * meaning that spies are automatically reset after each test method is invoked.
-	 * @return the reset mode
-	 */
-	MockkClear clear() default MockkClear.AFTER;
+    /**
+     * The reset mode to apply to the spied bean. The default is {@link MockkClear#AFTER}
+     * meaning that spies are automatically reset after each test method is invoked.
+     *
+     * @return the reset mode
+     */
+    MockkClear clear() default MockkClear.AFTER;
 }

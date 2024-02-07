@@ -20,10 +20,10 @@ import org.springframework.stereotype.Component
 @Import(InheritedNestedTestConfigurationTests.ActionPerformer::class)
 class InheritedNestedTestConfigurationTests {
     @MockkBean(relaxUnitFun = true)
-    lateinit var action: Action;
+    lateinit var action: Action
 
     @Autowired
-    lateinit var performer: ActionPerformer;
+    lateinit var performer: ActionPerformer
 
     @Test
     fun mockWasInvokedOnce() {
@@ -58,12 +58,12 @@ class InheritedNestedTestConfigurationTests {
     @Component
     class ActionPerformer(private val action: Action) {
         fun run() {
-            this.action.perform();
+            this.action.perform()
         }
     }
 
     interface Action {
-        fun perform();
+        fun perform()
     }
 
     @SpringBootConfiguration

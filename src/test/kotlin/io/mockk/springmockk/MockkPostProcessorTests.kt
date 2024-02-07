@@ -276,7 +276,7 @@ class MockkPostProcessorTests {
 
     internal class TestFactoryBean : FactoryBean<Any> {
 
-        override fun getObject(): Any? {
+        override fun getObject(): Any {
             return TestBean()
         }
 

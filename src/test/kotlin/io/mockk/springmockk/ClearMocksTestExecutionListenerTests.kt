@@ -91,7 +91,7 @@ class ClearMocksTestExecutionListenerTests {
             throw IllegalStateException()
         }
 
-        override fun getObjectType(): Class<*>? {
+        override fun getObjectType(): Class<*> {
             return String::class.java
         }
 

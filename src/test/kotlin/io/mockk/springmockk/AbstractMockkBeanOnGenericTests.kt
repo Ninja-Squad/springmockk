@@ -1,4 +1,5 @@
 package io.mockk.springmockk
+
 import io.mockk.springmockk.AbstractMockkBeanOnGenericTests.Something
 import io.mockk.springmockk.AbstractMockkBeanOnGenericTests.TestConfiguration
 import io.mockk.springmockk.AbstractMockkBeanOnGenericTests.Thing

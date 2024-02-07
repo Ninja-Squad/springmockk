@@ -1,15 +1,15 @@
 package io.mockk.springmockk;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.annotation.AliasFor;
+import org.springframework.test.context.junit4.SpringRunner;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.annotation.AliasFor;
-import org.springframework.test.context.junit4.SpringRunner;
 
 /**
  * Annotation that can be used to add MockK mocks to a Spring {@link ApplicationContext}. Can be
@@ -72,7 +72,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  * @author JB Nizet
  * @see MockkPostProcessor
  */
-@Target({ElementType.TYPE, ElementType.FIELD })
+@Target({ElementType.TYPE, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Repeatable(MockkBeans.class)
@@ -82,6 +82,7 @@ public @interface MockkBean {
      * The name of the bean to register or replace. If not specified the name will either
      * be generated or, if the mock replaces an existing bean, the existing name will be
      * used.
+     *
      * @return the name of the bean
      */
     String name() default "";
@@ -89,6 +90,7 @@ public @interface MockkBean {
     /**
      * The classes to mock. This is an alias of {@link #classes()} which can be used for
      * brevity if no other attributes are defined. See {@link #classes()} for details.
+     *
      * @return the classes to mock
      */
     @AliasFor("classes")
@@ -104,6 +106,7 @@ public @interface MockkBean {
      * <p>
      * If this is the only specified attribute consider using the {@code value} alias
      * instead.
+     *
      * @return the classes to mock
      */
     @AliasFor("value")
@@ -111,6 +114,7 @@ public @interface MockkBean {
 
     /**
      * Any extra interfaces that should also be declared on the mock.
+     *
      * @return any extra interfaces
      */
     Class<?>[] extraInterfaces() default {};
@@ -118,18 +122,21 @@ public @interface MockkBean {
     /**
      * The clear mode to apply to the mock bean. The default is {@link MockkClear#AFTER}
      * meaning that mocks are automatically reset after each test method is invoked.
+     *
      * @return the clear mode
      */
     MockkClear clear() default MockkClear.AFTER;
 
     /**
      * Specifies if the created mock will be relaxed or not
+     *
      * @return true if relaxed, false otherwise
      */
     boolean relaxed() default false;
 
     /**
      * Specifies if the created mock will have relaxed <code>Unit</code>-returning functions
+     *
      * @return true if relaxed, false otherwise
      */
     boolean relaxUnitFun() default false;

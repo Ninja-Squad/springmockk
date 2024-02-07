@@ -1,7 +1,5 @@
 package io.mockk.springmockk
 
-import java.util.*
-
 /**
  * Beans created using MockK.
  *

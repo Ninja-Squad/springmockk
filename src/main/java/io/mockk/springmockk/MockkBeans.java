@@ -22,10 +22,11 @@ import java.lang.annotation.Target;
 @Documented
 public @interface MockkBeans {
 
-	/**
-	 * Return the contained {@link MockkBean} annotations.
-	 * @return the mockk beans
-	 */
-	MockkBean[] value();
+    /**
+     * Return the contained {@link MockkBean} annotations.
+     *
+     * @return the mockk beans
+     */
+    MockkBean[] value();
 
 }

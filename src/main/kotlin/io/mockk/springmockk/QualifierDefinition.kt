@@ -6,7 +6,6 @@ import org.springframework.beans.factory.support.RootBeanDefinition
 import org.springframework.core.annotation.MergedAnnotations
 import java.lang.reflect.AnnotatedElement
 import java.lang.reflect.Field
-import java.util.HashSet
 
 
 /**
