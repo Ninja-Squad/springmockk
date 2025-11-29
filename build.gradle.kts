@@ -3,28 +3,24 @@ import java.time.Duration
 
 plugins {
     // if it's changed, it must also be channged in the bomProperty below
-    val kotlinVersion = "1.7.21"
+    val kotlinVersion = "2.2.21"
 
     `java-library`
     kotlin("jvm") version kotlinVersion
+    kotlin("plugin.spring") version kotlinVersion
     `maven-publish`
     signing
-    id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
-    id("org.jetbrains.kotlin.plugin.noarg") version kotlinVersion
-    id("org.springframework.boot") version "3.0.0" apply false
-    id("io.spring.dependency-management") version "1.1.0"
-    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+    id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
 }
 
 group = "com.ninja-squad"
-version = "4.0.2"
-description = "MockBean and SpyBean, but for MockK instead of Mockito"
+version = "5.0.0"
+description = "MockitoBean and MockitoSpyBean, but for MockK instead of Mockito"
 
 val sonatypeUsername = project.findProperty("sonatypeUsername")?.toString() ?: ""
 val sonatypePassword = project.findProperty("sonatypePassword")?.toString() ?: ""
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
     withJavadocJar()
     withSourcesJar()
 }
@@ -41,14 +37,15 @@ val sharedManifest = Action<Manifest> {
     )
 }
 
-tasks {
-    withType(KotlinCompile::class.java) {
-        kotlinOptions {
-            freeCompilerArgs = listOf("-Xjsr305=strict", "-Xjvm-default=all")
-            jvmTarget = "17"
-        }
-    }
+kotlin {
+    jvmToolchain(17)
 
+    compilerOptions {
+        freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-default-target=param-property")
+    }
+}
+
+tasks {
     test {
         useJUnitPlatform()
         jvmArgs(
@@ -86,27 +83,22 @@ afterEvaluate {
     }
 }
 
-dependencyManagement {
-    imports {
-        mavenBom(org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES) {
-            bomProperty("kotlin.version", "1.7.21")
-        }
-    }
-}
+val springVersion = "7.0.1"
 
 dependencies {
-    api("io.mockk:mockk-jvm:1.13.3")
+    api("io.mockk:mockk-jvm:1.14.6")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.springframework.boot:spring-boot-test")
-    implementation("org.springframework:spring-test")
-    implementation("org.springframework:spring-context")
+    implementation("org.springframework:spring-test:$springVersion")
+    implementation("org.springframework:spring-context:$springVersion")
 
-    testImplementation("org.assertj:assertj-core")
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testImplementation("org.junit.jupiter:junit-jupiter-params")
+    testImplementation("org.assertj:assertj-core:3.27.6")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:6.0.1")
+    testImplementation("jakarta.annotation:jakarta.annotation-api:3.0.0")
 
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:6.0.1")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.0.1")
 }
 
 publishing {
@@ -147,7 +139,7 @@ publishing {
     repositories {
         maven {
             name = "build"
-            url = uri("$buildDir/repo")
+            url = uri("${project.layout.buildDirectory}/repo")
         }
     }
 }

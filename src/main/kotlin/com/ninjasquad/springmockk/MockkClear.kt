@@ -1,16 +1,19 @@
 package com.ninjasquad.springmockk
 
 import java.lang.ref.WeakReference
-import java.util.IdentityHashMap
+
 
 /**
- * Clear strategy used on a mockk bean, applied to a mock via the
- * [MockkBean] annotation.
+ * Clear strategy used on a mock bean.
+ *
+ * Usually applied to a mock via the [`@MockkBean`][MockkBean] or
+ * [`@MockkSpyBean`][MockkSpyBean] annotation but can also be directly
+ * applied to any mock in the `ApplicationContext` using the [clear] extension function.
  *
  * @author Phillip Webb
- * @author JB Nizet
- * @since 1.4.0
- * @see ClearMocksTestExecutionListener
+ * @author Sam Brannen
+ * @author Jean-Baptiste Nizet
+ * @see MockkClearTestExecutionListener
  */
 enum class MockkClear {
     /**
@@ -24,7 +27,7 @@ enum class MockkClear {
     AFTER,
 
     /**
-     * Don't reset the mock.
+     * Do not reset the mock.
      */
     NONE;
 
@@ -43,7 +46,7 @@ enum class MockkClear {
         private val entries = mutableListOf<MockkClearEntry>()
 
         internal fun set(mock: Any, clear: MockkClear) {
-            require(mock.isMock) { "Only mocks can be cleared" }
+            require(mock.isMockOrSpy) { "Only mocks can be cleared" }
             // Using === is important here to not call equals() on the mock.
             val entry = entries.firstOrNull { it.mockRef.refersTo(mock) }?.apply { clearMode = clear }
             if (entry == null) {
@@ -62,7 +65,10 @@ enum class MockkClear {
     }
 }
 
-fun <T: Any> T.clear(clear: MockkClear): T {
+/**
+ * Sets the clear mode for the given mock or spy
+ */
+fun <T : Any> T.clear(clear: MockkClear): T {
     MockkClear.set(this, clear)
     return this
 }
