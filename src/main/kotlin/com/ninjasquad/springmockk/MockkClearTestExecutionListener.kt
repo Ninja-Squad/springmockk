@@ -102,7 +102,7 @@ class MockkClearTestExecutionListener : AbstractTestExecutionListener() {
                 }
             }
             try {
-                beanFactory.getBean<MockBeans>(MockBeans::class.java).clearAll(clear)
+                beanFactory.getBean(MockBeans::class.java).clearAll(clear)
             } catch (ex: NoSuchBeanDefinitionException) {
                 // Continue
             }
