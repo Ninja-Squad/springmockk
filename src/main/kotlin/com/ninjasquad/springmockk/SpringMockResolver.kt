@@ -30,8 +30,7 @@ internal class SpringMockResolver {
          * with a non-static [TargetSource].
          * @param beanName the name of the bean to spy on
          * @param bean the bean to spy on
-         * @since 7.0
-         * @see .getUltimateTargetObject
+         * @see getUltimateTargetObject
          */
         fun rejectUnsupportedSpyTarget(beanName: String?, bean: Any?) {
             if (SPRING_AOP_PRESENT) {
