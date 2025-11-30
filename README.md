@@ -42,7 +42,7 @@ class GreetingControllerTest {
 
 Add this to your dependencies:
 ```kotlin
-testImplementation("com.ninja-squad:springmockk:5.0.0")
+testImplementation("com.ninja-squad:springmockk:5.0.1")
 ```
 
 ### Maven
@@ -52,7 +52,7 @@ Add this to your dependencies:
 <dependency>
   <groupId>com.ninja-squad</groupId>
   <artifactId>springmockk</artifactId>
-  <version>5.0.0</version>
+  <version>5.0.1</version>
   <scope>test</scope>
 </dependency>
 ```
