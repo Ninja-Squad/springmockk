@@ -76,12 +76,12 @@ internal class MockkBeanOverrideHandler private constructor(
         if (other === this) {
             return true
         }
-        if (other == null || other.javaClass != javaClass) {
-            return false
-        }
-        return (other is MockkBeanOverrideHandler && super.equals(other) &&
-                (this.relaxed == other.relaxed) && (this.relaxUnitFun == other.relaxUnitFun) &&
-                this.extraInterfaces == other.extraInterfaces)
+        if (javaClass != other?.javaClass) return false
+        other as MockkBeanOverrideHandler
+
+        return super.equals(other) &&
+                this.relaxed == other.relaxed && this.relaxUnitFun == other.relaxUnitFun &&
+                this.extraInterfaces == other.extraInterfaces
     }
 
     override fun hashCode(): Int {

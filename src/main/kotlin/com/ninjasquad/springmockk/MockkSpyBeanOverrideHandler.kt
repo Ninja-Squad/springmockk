@@ -7,7 +7,6 @@ import org.springframework.test.context.bean.override.BeanOverrideStrategy
 import org.springframework.util.Assert
 import org.springframework.util.StringUtils
 import java.lang.reflect.Field
-import java.util.function.Supplier
 
 /**
  * [BeanOverrideHandler][org.springframework.test.context.bean.override.BeanOverrideHandler] implementation
