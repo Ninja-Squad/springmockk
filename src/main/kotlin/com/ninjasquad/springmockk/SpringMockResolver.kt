@@ -36,9 +36,7 @@ internal class SpringMockResolver {
         fun rejectUnsupportedSpyTarget(beanName: String?, bean: Any?) {
             if (SPRING_AOP_PRESENT) {
                 check(!(AopUtils.isAopProxy(bean) && bean is Advised && !bean.getTargetSource().isStatic())) {
-                    """
-					@MockkSpyBean cannot be applied to bean '%s', because it is a Spring AOP proxy with a non-static TargetSource. Perhaps you have attempted to spy on a scoped proxy, which is not supported.
-					""".trimIndent().format(beanName)
+                    "@MockkSpyBean cannot be applied to bean '$beanName', because it is a Spring AOP proxy with a non-static TargetSource. Perhaps you have attempted to spy on a scoped proxy, which is not supported."
                 }
             }
         }
