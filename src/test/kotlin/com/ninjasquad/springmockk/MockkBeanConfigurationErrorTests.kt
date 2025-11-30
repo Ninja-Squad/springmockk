@@ -31,7 +31,7 @@ class MockkBeanConfigurationErrorTests {
     fun cannotOverrideBeanByNameWithNoSuchBeanName() {
         val context = GenericApplicationContext()
         context.registerBean("anotherBean", String::class.java, Supplier { "example" })
-        BeanOverrideContextCustomizerTestUtils.customizeApplicationContext(FailureByNameLookup::class.java, context)
+        BeanOverrideContextCustomizerTestUtils.customizeApplicationContext(FailureByNameLookup::class, context)
         assertThatIllegalStateException()
             .isThrownBy { context.refresh() }
             .withMessage(
@@ -43,7 +43,7 @@ class MockkBeanConfigurationErrorTests {
     fun cannotOverrideBeanByNameWithBeanOfWrongType() {
         val context = GenericApplicationContext()
         context.registerBean("beanToOverride", Int::class.java, Supplier { 42 })
-        BeanOverrideContextCustomizerTestUtils.customizeApplicationContext(FailureByNameLookup::class.java, context)
+        BeanOverrideContextCustomizerTestUtils.customizeApplicationContext(FailureByNameLookup::class, context)
         assertThatIllegalStateException()
             .isThrownBy { context.refresh() }
             .withMessage("Unable to replace bean: there is no bean with name 'beanToOverride' and type java.lang.String (as required by field 'FailureByNameLookup.example'). If the bean is defined in a @Bean method, make sure the return type is the most specific type possible (for example, the concrete implementation type).")
@@ -52,7 +52,7 @@ class MockkBeanConfigurationErrorTests {
     @Test
     fun cannotOverrideBeanByTypeWithNoSuchBeanType() {
         val context = GenericApplicationContext()
-        BeanOverrideContextCustomizerTestUtils.customizeApplicationContext(FailureByTypeLookup::class.java, context)
+        BeanOverrideContextCustomizerTestUtils.customizeApplicationContext(FailureByTypeLookup::class, context)
         assertThatIllegalStateException()
             .isThrownBy { context.refresh() }
             .withMessage("Unable to override bean: there are no beans of type java.lang.String (as required by field 'FailureByTypeLookup.example'). If the bean is defined in a @Bean method, make sure the return type is the most specific type possible (for example, the concrete implementation type).")
@@ -63,7 +63,7 @@ class MockkBeanConfigurationErrorTests {
         val context = GenericApplicationContext()
         context.registerBean("bean1", String::class.java, Supplier { "example1" })
         context.registerBean("bean2", String::class.java, Supplier { "example2" })
-        BeanOverrideContextCustomizerTestUtils.customizeApplicationContext(FailureByTypeLookup::class.java, context)
+        BeanOverrideContextCustomizerTestUtils.customizeApplicationContext(FailureByTypeLookup::class, context)
         assertThatIllegalStateException()
             .isThrownBy { context.refresh() }
             .withMessage("Unable to select a bean to override: found 2 beans of type java.lang.String (as required by field 'FailureByTypeLookup.example'): %s",

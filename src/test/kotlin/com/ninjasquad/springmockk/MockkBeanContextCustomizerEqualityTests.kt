@@ -18,6 +18,7 @@ package com.ninjasquad.springmockk
 import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.test.context.ContextCustomizer
+import kotlin.reflect.KClass
 
 /**
  * Tests that validate the behavior of [MockkBean] and
@@ -28,55 +29,55 @@ import org.springframework.test.context.ContextCustomizer
 class MockkBeanContextCustomizerEqualityTests {
     @Test
     fun contextCustomizerWithSameMockByNameInDifferentClassIsEqual() {
-        assertThat(customizerFor(Case1ByName::class.java)).isEqualTo(customizerFor(Case2ByName::class.java))
+        assertThat(customizerFor(Case1ByName::class)).isEqualTo(customizerFor(Case2ByName::class))
     }
 
     @Test
     fun contextCustomizerWithSameMockByTypeInDifferentClassIsEqual() {
-        assertThat(customizerFor(Case1ByType::class.java))
-            .isEqualTo(customizerFor(Case2ByTypeSameFieldName::class.java))
+        assertThat(customizerFor(Case1ByType::class))
+            .isEqualTo(customizerFor(Case2ByTypeSameFieldName::class))
     }
 
     @Test
     fun contextCustomizerWithSameMockByTypeAndDifferentFieldNamesAreNotEqual() {
-        assertThat(customizerFor(Case1ByType::class.java))
-            .isNotEqualTo(customizerFor(Case2ByType::class.java))
+        assertThat(customizerFor(Case1ByType::class))
+            .isNotEqualTo(customizerFor(Case2ByType::class))
     }
 
     @Test
     fun contextCustomizerWithSameSpyByNameInDifferentClassIsEqual() {
-        assertThat(customizerFor(Case4ByName::class.java)).isEqualTo(customizerFor(Case5ByName::class.java))
+        assertThat(customizerFor(Case4ByName::class)).isEqualTo(customizerFor(Case5ByName::class))
     }
 
     @Test
     fun contextCustomizerWithSameSpyByTypeInDifferentClassIsEqual() {
-        assertThat(customizerFor(Case4ByType::class.java))
-            .isEqualTo(customizerFor(Case5ByTypeSameFieldName::class.java))
+        assertThat(customizerFor(Case4ByType::class))
+            .isEqualTo(customizerFor(Case5ByTypeSameFieldName::class))
     }
 
     @Test
     fun contextCustomizerWithSameSpyByTypeAndDifferentFieldNamesAreNotEqual() {
-        assertThat(customizerFor(Case4ByType::class.java))
-            .isNotEqualTo(customizerFor(Case5ByType::class.java))
+        assertThat(customizerFor(Case4ByType::class))
+            .isNotEqualTo(customizerFor(Case5ByType::class))
     }
 
     @Test
     fun contextCustomizerWithSimilarMockButDifferentRelaxedIsNotEqual() {
-        assertThat(customizerFor(Case1ByType::class.java)).isNotEqualTo(customizerFor(Case3::class.java))
+        assertThat(customizerFor(Case1ByType::class)).isNotEqualTo(customizerFor(Case3::class))
     }
 
     @Test
     fun contextCustomizerWithSimilarMockButDifferentRelaxUnitFunIsNotEqual() {
-        assertThat(customizerFor(Case1ByType::class.java)).isNotEqualTo(customizerFor(Case3RelaxUnitFun::class.java))
+        assertThat(customizerFor(Case1ByType::class)).isNotEqualTo(customizerFor(Case3RelaxUnitFun::class))
     }
 
     @Test
     fun contextCustomizerWithMockAndSpyAreNotEqual() {
-        assertThat(customizerFor(Case1ByType::class.java))
-            .isNotEqualTo(customizerFor(Case4ByType::class.java))
+        assertThat(customizerFor(Case1ByType::class))
+            .isNotEqualTo(customizerFor(Case4ByType::class))
     }
 
-    private fun customizerFor(testClass: Class<*>): ContextCustomizer {
+    private fun customizerFor(testClass: KClass<*>): ContextCustomizer {
         val customizer= BeanOverrideContextCustomizerTestUtils.createContextCustomizer(testClass)
         assertThat(customizer).isNotNull()
         return customizer!!
