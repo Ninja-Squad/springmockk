@@ -124,7 +124,19 @@ Since version 5.x of SpringMockK, it clones the Mockito annotations from Spring 
  - Version 3.x of SpringMockK: compatible with Spring Boot 2.4.x, 2.5.x and 2.6.x, Java 8+
  - Version 2.x of SpringMockK: compatible with Spring Boot 2.2.x and 2.3.x, Java 8+
  - Version 1.x of SpringMockK: compatible with Spring Boot 2.1.x, Java 8+
- 
+
+## Migrating to version 5.x
+
+Most of the changes have been done to align SpringMockK with the native Mockito support in
+Spring framework.
+
+- Replace `@SpykBean` by `@MockkSpyBean`: the annotation has been renamed to be consistent with the naming used by Spring Framework for `@MockitoBean` and `@MockitoSpyBean`
+- `@MockkBean` and `@MockkSpyBean` are now written in Kotlin, and are repeatable using Kotlin's native mechanism. If you were using `@MockkBeans` and `@SpykBeans` explicitly, don't do it anymore and repeat the `@MockkBean` and `@MockkSpyBean` annotations.
+- The `classes` property has been renamed to `types`. it was previously an alias for `classes`. So if you had `@MockkBean(classes = [SomeService::class])`, it should be rewrteen as `@MockkBean(types = [SomeService::class])`
+- The `value` property is now an alias for `name`. it was previously an alias for `classes`. So if you had `@MockkBean([SomeService::class])`, it should be rewrteen as `@MockkBean(types = [SomeService::class])`
+- The extension property `com.ninjasquad.springmockk.MockkFunctionsKt.isMock` has been renamed to 
+  `isMockOrSpy`.
+
 ## How to build
 
 ```
