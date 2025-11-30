@@ -20,6 +20,9 @@ import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.test.context.ContextConfigurationAttributes
 import org.springframework.test.context.ContextCustomizer
 import org.springframework.test.context.MergedContextConfiguration
+import kotlin.reflect.KClass
+import kotlin.reflect.full.memberFunctions
+import kotlin.reflect.jvm.isAccessible
 
 /**
  * Test utilities for [BeanOverrideContextCustomizer] that are public so
@@ -37,10 +40,10 @@ object BeanOverrideContextCustomizerTestUtils {
      * @param testClass a test class to introspect
      * @return a context customizer for bean override support, or null
      */
-    fun createContextCustomizer(testClass: Class<*>): ContextCustomizer? {
+    fun createContextCustomizer(testClass: KClass<*>): ContextCustomizer? {
         return factory.createContextCustomizer(
             testClass,
-            listOf(ContextConfigurationAttributes(testClass))
+            listOf(ContextConfigurationAttributes(testClass.java))
         )
     }
 
@@ -49,30 +52,28 @@ object BeanOverrideContextCustomizerTestUtils {
      * @param testClass the test to process
      * @param context the context to customize
      */
-    fun customizeApplicationContext(testClass: Class<*>, context: ConfigurableApplicationContext) {
+    fun customizeApplicationContext(testClass: KClass<*>, context: ConfigurableApplicationContext) {
         val contextCustomizer: ContextCustomizer? = createContextCustomizer(testClass)
-        if (contextCustomizer != null) {
-            contextCustomizer.customizeContext(context, mockk<MergedContextConfiguration>())
-        }
+        contextCustomizer?.customizeContext(context, mockk<MergedContextConfiguration>())
     }
 }
 
 class BeanOverrideContextCustomizerFactoryAdapter(private val delegate: Any) {
     fun createContextCustomizer(
-        testClass: Class<*>,
+        testClass: KClass<*>,
         configAttributes: List<ContextConfigurationAttributes>
-    ): ContextCustomizer {
-        val method = delegate.javaClass.methods.first { it.name == "createContextCustomizer" }
-        method.isAccessible = true
-        return method.invoke(delegate, testClass, configAttributes) as ContextCustomizer
+    ): ContextCustomizer? {
+        val actualCreateContextCustomizer = delegate::class.memberFunctions.first { it.name == "createContextCustomizer" }
+        actualCreateContextCustomizer.isAccessible = true
+        return actualCreateContextCustomizer.call(delegate, testClass.java, configAttributes) as ContextCustomizer?
     }
 
     companion object {
         fun create(): BeanOverrideContextCustomizerFactoryAdapter {
-            val clazz = Class.forName("org.springframework.test.context.bean.override.BeanOverrideContextCustomizerFactory")
-            val constructor = clazz.declaredConstructors[0]
+            val clazz = Class.forName("org.springframework.test.context.bean.override.BeanOverrideContextCustomizerFactory").kotlin
+            val constructor = clazz.constructors.first { it.parameters.isEmpty() }
             constructor.isAccessible = true
-            val delegate = constructor.newInstance()
+            val delegate = constructor.call()
             return BeanOverrideContextCustomizerFactoryAdapter(delegate)
         }
     }

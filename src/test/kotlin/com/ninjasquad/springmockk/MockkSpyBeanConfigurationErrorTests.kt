@@ -37,7 +37,7 @@ class MockkSpyBeanConfigurationErrorTests {
     fun contextCustomizerCannotBeCreatedWithNoSuchBeanName() {
         val context = GenericApplicationContext()
         context.registerBean("present", String::class.java, Supplier { "example" })
-        BeanOverrideContextCustomizerTestUtils.customizeApplicationContext(ByNameSingleLookup::class.java, context)
+        BeanOverrideContextCustomizerTestUtils.customizeApplicationContext(ByNameSingleLookup::class, context)
         assertThatIllegalStateException()
             .isThrownBy { context.refresh() }
             .withMessage("Unable to wrap bean: there is no bean with name 'beanToSpy' and type java.lang.String (as required by field 'ByNameSingleLookup.example'). If the bean is defined in a @Bean method, make sure the return type is the most specific type possible (for example, the concrete implementation type).")
@@ -46,7 +46,7 @@ class MockkSpyBeanConfigurationErrorTests {
     @Test
     fun contextCustomizerCannotBeCreatedWithNoSuchBeanType() {
         val context = GenericApplicationContext()
-        BeanOverrideContextCustomizerTestUtils.customizeApplicationContext(ByTypeSingleLookup::class.java, context)
+        BeanOverrideContextCustomizerTestUtils.customizeApplicationContext(ByTypeSingleLookup::class, context)
         assertThatIllegalStateException()
             .isThrownBy { context.refresh() }
             .withMessage("Unable to select a bean to wrap: there are no beans of type java.lang.String (as required by field 'ByTypeSingleLookup.example'). If the bean is defined in a @Bean method, make sure the return type is the most specific type possible (for example, the concrete implementation type).")
@@ -57,7 +57,7 @@ class MockkSpyBeanConfigurationErrorTests {
         val context = GenericApplicationContext()
         context.registerBean("bean1", String::class.java, Supplier { "example1" })
         context.registerBean("bean2", String::class.java, Supplier { "example2" })
-        BeanOverrideContextCustomizerTestUtils.customizeApplicationContext(ByTypeSingleLookup::class.java, context)
+        BeanOverrideContextCustomizerTestUtils.customizeApplicationContext(ByTypeSingleLookup::class, context)
         assertThatIllegalStateException()
             .isThrownBy { context.refresh() }
             .withMessage("Unable to select a bean to wrap: found 2 beans of type java.lang.String (as required by field 'ByTypeSingleLookup.example'): %s",
@@ -69,7 +69,7 @@ class MockkSpyBeanConfigurationErrorTests {
     fun mockitoSpyBeanCannotSpyOnScopedProxy() {
         val context = AnnotationConfigApplicationContext()
         context.register(MyScopedProxy::class.java)
-        BeanOverrideContextCustomizerTestUtils.customizeApplicationContext(ScopedProxyTestCase::class.java, context)
+        BeanOverrideContextCustomizerTestUtils.customizeApplicationContext(ScopedProxyTestCase::class, context)
         context.refresh()
 
         assertThatExceptionOfType(BeanCreationException::class.java)
@@ -85,7 +85,7 @@ class MockkSpyBeanConfigurationErrorTests {
     fun mockitoSpyBeanCannotSpyOnSelfInjectionScopedProxy() {
         val context = AnnotationConfigApplicationContext()
         context.register(MySelfInjectionScopedProxy::class.java)
-        BeanOverrideContextCustomizerTestUtils.customizeApplicationContext(SelfInjectionScopedProxyTestCase::class.java, context)
+        BeanOverrideContextCustomizerTestUtils.customizeApplicationContext(SelfInjectionScopedProxyTestCase::class, context)
 
         assertThatExceptionOfType(BeanCreationException::class.java)
             .isThrownBy { context.refresh() }
