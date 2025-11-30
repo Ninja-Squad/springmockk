@@ -126,6 +126,8 @@ publishing {
                         id.set("jnizet")
                         name.set("Jean-Baptiste Nizet")
                         email.set("jb@ninja-squad.com")
+                        organization.set("Ninja Squad")
+                        organizationUrl.set("https://ninja-squad.com")
                     }
                 }
                 scm {
