@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.time.Duration
 
 plugins {
@@ -153,6 +152,9 @@ signing {
 nexusPublishing {
     repositories {
         sonatype {
+            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
+
             username.set(sonatypeUsername)
             password.set(sonatypePassword)
         }
