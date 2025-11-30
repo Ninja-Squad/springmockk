@@ -6,7 +6,6 @@ package com.ninjasquad.springmockk
  * @author Andy Wilkinson
  * @author Sam Brannen
  * @author Jean-Baptiste Nizet
- * @since 6.2
  */
 internal class MockBeans {
 

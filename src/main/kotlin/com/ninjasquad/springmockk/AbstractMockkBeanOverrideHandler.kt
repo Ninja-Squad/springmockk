@@ -15,7 +15,6 @@ import kotlin.reflect.jvm.jvmName
  * @author Stephane Nicoll
  * @author Sam Brannen
  * @author Jean-Baptiste Nizet
- * @since 6.2
  */
 internal abstract class AbstractMockkBeanOverrideHandler : BeanOverrideHandler {
 
