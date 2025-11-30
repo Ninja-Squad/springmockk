@@ -155,9 +155,8 @@ class MockkClearTestExecutionListener : AbstractTestExecutionListener() {
                         enabled = false
                         if (logger.isDebugEnabled()) {
                             logger.debug(
-                                """
-                                MockkClearTestExecutionListener is disabled in the current environment. See exception for details.
-                                """.trimIndent(), ex
+                                "MockkClearTestExecutionListener is disabled in the current environment. See exception for details.",
+                                ex
                             )
                         }
                     }
