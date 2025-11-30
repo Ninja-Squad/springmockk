@@ -15,7 +15,6 @@
  */
 package com.ninjasquad.springmockk.integration
 
-import com.ninjasquad.springmockk.FixedResolvableType
 import com.ninjasquad.springmockk.MockkAssertions.assertIsSpy
 import com.ninjasquad.springmockk.MockkSpyBean
 import com.ninjasquad.springmockk.example.ExampleGenericService
@@ -28,6 +27,7 @@ import org.springframework.beans.factory.support.RootBeanDefinition
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.ImportBeanDefinitionRegistrar
+import org.springframework.core.ResolvableType
 import org.springframework.core.type.AnnotationMetadata
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig
 
@@ -66,8 +66,8 @@ class MockkSpyBeanWithGenericsOnTestFieldForExistingGenericBeanProducedByFactory
             registry: BeanDefinitionRegistry
         ) {
             val definition = RootBeanDefinition(ExampleGenericServiceFactoryBean::class.java)
-            val targetType = FixedResolvableType.forClassWithGenerics(
-                ExampleGenericServiceFactoryBean::class.java, null, ExampleGenericService::class.java
+            val targetType = ResolvableType.forClassWithGenerics(
+                ExampleGenericServiceFactoryBean::class.java, Any::class.java, ExampleGenericService::class.java
             )
             definition.setTargetType(targetType)
             registry.registerBeanDefinition("exampleService", definition)
