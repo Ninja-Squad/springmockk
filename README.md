@@ -4,17 +4,17 @@
 
 Support for Spring Boot integration tests written in Kotlin using [MockK](https://mockk.io/) instead of Mockito.
  
-Spring Boot provides `@MockBean` and `@SpyBean` annotations for integration tests, which create mock/spy beans using Mockito.
+Spring provides `@MockitoBean` and `@MockitoSpyBean` annotations for integration tests, which create mock/spy beans using Mockito.
 
-This project provides equivalent annotations `MockkBean` and `SpykBean` to do the exact same thing with MockK.
+This project provides equivalent annotations `MockkBean` and `MockkSpyBean` to do the exact same thing with MockK.
 
 ## Principle
 
-All the Mockito-specific classes of the spring-boot-test library, including the automated tests, have been cloned, translated to Kotlin, and adapted to MockK.
+All the Mockito-specific classes of Spring, including the automated tests, have been cloned, translated to Kotlin, and adapted to MockK.
 
-This library thus provides the same functionality as the standard Mockito-based Spring Boot mock beans.
+This library thus provides the same functionality as the standard Mockito-based Spring mock beans.
 
-For example (using JUnit 5, but you can of course also use JUnit 4):
+For example:
 
 ```kotlin
 @ExtendWith(SpringExtension::class)
@@ -42,14 +42,7 @@ class GreetingControllerTest {
 
 Add this to your dependencies:
 ```kotlin
-testImplementation("com.ninja-squad:springmockk:4.0.2")
-```
-
-If you want to make sure Mockito (and the standard `MockBean` and `SpyBean` annotations) is not used, you can also exclude the mockito dependency:
-```kotlin
-testImplementation("org.springframework.boot:spring-boot-starter-test") {
-    exclude(module = "mockito-core")
-}
+testImplementation("com.ninja-squad:springmockk:5.0.0")
 ```
 
 ### Maven
@@ -59,7 +52,7 @@ Add this to your dependencies:
 <dependency>
   <groupId>com.ninja-squad</groupId>
   <artifactId>springmockk</artifactId>
-  <version>4.0.2</version>
+  <version>5.0.0</version>
   <scope>test</scope>
 </dependency>
 ```
@@ -68,9 +61,18 @@ Add this to your dependencies:
 
  - the MockK defaults are used, which means that mocks created by the annotations are strict (i.e. not relaxed) by default. But [you can configure MockK](https://mockk.io/#settings-file) to use different defaults globally, or you can use `@MockkBean(relaxed = true)` or `@MockkBean(relaxUnitFun = true)`. 
  - the created mocks can't be serializable as they can be with Mockito (AFAIK, MockK doesn't support that feature)
+ - When *spying* a bean that is then wrapped in a Spring AOP proxy (for example when using the `@Cacheable` annotation), you must stub and verify using the ultimate target of the bean, rather
+  than the bean itself. Use `AopTestUtils.getUltimateTargetObject()` to get the ultimate target.
 
 ## Gotchas
 
+### Qualifier annotations
+
+Qualifier annotations are looked up on fields, and not on properties.
+This doesn't matter much until you use a custom qualifier annotation.
+In that case, make sure that it targets fields and not properties, or use `@field:YourQualifier` to apply it on your beans.
+
+### JDK proxies
 In some situations, the beans that need to be spied are JDK proxies. In recent versions of Java (Java 16+ AFAIK),
 MockK can't spy JDK proxies unless you pass the argument `--add-opens java.base/java.lang.reflect=ALL-UNNAMED`
 to the JVM running the tests.
@@ -107,16 +109,17 @@ For Maven users:
 ````
 
 ## Limitations
- - the [issue 5837](https://github.com/spring-projects/spring-boot/issues/5837), which has been fixed for Mockito spies using Mockito-specific features, also exists with MockK, and hasn't been fixed yet. 
-   If you have a good idea, please tell!
- - [this is not an official Spring Boot project](https://github.com/spring-projects/spring-boot/issues/15749), so it might not work out of the box for newest versions if backwards incompatible changes are introduced in Spring Boot. 
- Please file issues if you find problems.
- - annotations are looked up on fields, and not on properties (for now). 
-   This doesn't matter much until you use a custom qualifier annotation.
-   In that case, make sure that it targets fields and not properties, or use `@field:YourQualifier` to apply it on your beans.
+ - [this is not an official Spring project](https://github.com/spring-projects/spring-boot/issues/15749), so it might not work out of the box for newest versions if backwards incompatible changes are introduced in Spring.
 
 ## Versions compatibility
 
+SpringMockK originally cloned the Mockito annotations provided by Spring Boot (`MockBean` and `SpyBean`).
+Spring Boot now doesn't provide these annotations anymore. Similar annotations are now provided
+by the Spring Framework itself.
+
+Since version 5.x of SpringMockK, it clones the Mockito annotations from Spring Framework.
+
+ - Version 5.x of SpringMockK: compatible with Spring Framework 7, Java 17+
  - Version 4.x of SpringMockK: compatible with Spring Boot 3.x, Java 17+
  - Version 3.x of SpringMockK: compatible with Spring Boot 2.4.x, 2.5.x and 2.6.x, Java 8+
  - Version 2.x of SpringMockK: compatible with Spring Boot 2.2.x and 2.3.x, Java 8+
